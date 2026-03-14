@@ -1,0 +1,168 @@
+{
+  "block": "block4_marketing",
+  "marketing_by_place": {
+    "Ruski": {
+      "сайт": "https://ruski354.ru",
+      "соцсети": [
+        {
+          "network": "youtube",
+          "url": "https://www.youtube.com/channel/UCsWP7AedBCVoOd_j2465Ftw"
+        }
+      ],
+      "программа_лояльности": {
+        "has_loyalty": false,
+        "loyalty_name": null,
+        "loyalty_format": null,
+        "loyalty_cost_per_point": null,
+        "loyalty_how_to_earn": null
+      }
+    },
+    "Kalinka": {
+      "сайт": "https://kalinkananeglinke.ru",
+      "соцсети": [],
+      "программа_лояльности": {
+        "has_loyalty": false,
+        "loyalty_name": null,
+        "loyalty_format": null,
+        "loyalty_cost_per_point": null,
+        "loyalty_how_to_earn": null
+      }
+    },
+    "Есения": {
+      "сайт": "http://esenia.rest",
+      "соцсети": [
+        {
+          "network": "telegram",
+          "url": "https://t.me/Eseniarest"
+        }
+      ],
+      "программа_лояльности": {
+        "has_loyalty": false,
+        "loyalty_name": null,
+        "loyalty_format": null,
+        "loyalty_cost_per_point": null,
+        "loyalty_how_to_earn": null
+      }
+    },
+    "Uhvat": {
+      "сайт": "https://uhvat.restaurant",
+      "соцсети": [],
+      "программа_лояльности": {
+        "has_loyalty": true,
+        "loyalty_name": null,
+        "loyalty_format": null,
+        "loyalty_cost_per_point": null,
+        "loyalty_how_to_earn": null
+      }
+    },
+    "Окно": {
+      "сайт": "https://oknohotel.com/restoran/",
+      "соцсети": [
+        {
+          "network": "vk",
+          "url": "https://vk.com/club228030595"
+        },
+        {
+          "network": "telegram",
+          "url": "https://t.me/okno_aparthotel"
+        },
+        {
+          "network": "dzen",
+          "url": "https://dzen.ru/butikapartotelokno"
+        }
+      ],
+      "программа_лояльности": {
+        "has_loyalty": false,
+        "loyalty_name": null,
+        "loyalty_format": null,
+        "loyalty_cost_per_point": null,
+        "loyalty_how_to_earn": null
+      }
+    },
+    "Страна которой нет": {
+      "сайт": "https://stranakotoroynet.ru",
+      "соцсети": [
+        {
+          "network": "instagram",
+          "url": "https://instagram.com/strana_kotoroy_net"
+        },
+        {
+          "network": "facebook",
+          "url": "https://www.facebook.com/stranakotoroynet"
+        }
+      ],
+      "программа_лояльности": {
+        "has_loyalty": false,
+        "loyalty_name": null,
+        "loyalty_format": null,
+        "loyalty_cost_per_point": null,
+        "loyalty_how_to_earn": null
+      }
+    },
+    "Сибирячка иснегирь": {
+      "сайт": "https://sibiryachkaisnegirrest.ru",
+      "соцсети": [],
+      "программа_лояльности": {
+        "has_loyalty": true,
+        "loyalty_name": null,
+        "loyalty_format": [
+          "бонусная"
+        ],
+        "loyalty_cost_per_point": null,
+        "loyalty_how_to_earn": null
+      }
+    },
+    "Ямщик": {
+      "сайт": "https://restoran-yamshchik.ru",
+      "соцсети": [],
+      "программа_лояльности": {
+        "has_loyalty": false,
+        "loyalty_name": null,
+        "loyalty_format": null,
+        "loyalty_cost_per_point": null,
+        "loyalty_how_to_earn": null
+      }
+    },
+    "Таежные дачи": {
+      "сайт": null,
+      "соцсети": [],
+      "программа_лояльности": {
+        "has_loyalty": false,
+        "loyalty_name": null,
+        "loyalty_format": null,
+        "loyalty_cost_per_point": null,
+        "loyalty_how_to_earn": null
+      }
+    },
+    "Матрешка": {
+      "сайт": "https://matryoshka-rest.ru",
+      "соцсети": [
+        {
+          "network": "vk",
+          "url": "https://vk.com/matryoshka_moscow"
+        },
+        {
+          "network": "telegram",
+          "url": "https://t.me/matryoshka_moscow"
+        },
+        {
+          "network": "instagram",
+          "url": "https://www.instagram.com/matryoshka_moscow"
+        },
+        {
+          "network": "facebook",
+          "url": "https://www.facebook.com/Matryoshka.rest"
+        }
+      ],
+      "программа_лояльности": {
+        "has_loyalty": true,
+        "loyalty_name": null,
+        "loyalty_format": [
+          "скидочная"
+        ],
+        "loyalty_cost_per_point": null,
+        "loyalty_how_to_earn": null
+      }
+    }
+  }
+}
