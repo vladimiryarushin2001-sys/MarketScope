@@ -1,0 +1,40 @@
+{
+  "block": "block2_menu",
+  "source_csv": "/Users/danilapertsev/Desktop/ms_v2/final_blyat_v3.csv",
+  "menu_by_place": {
+    "Ruski": {
+      "status": "parsed",
+      "menu_urls": [
+        "https://ruski.com/menu"
+      ],
+      "items_count": 3,
+      "has_kids_menu": false,
+      "categories": ["ЗАКУСКИ", "ГОРЯЧЕЕ", "ДЕСЕРТЫ"],
+      "items": [
+        {
+          "category": "ЗАКУСКИ",
+          "name": "Оливье с раком",
+          "price": 990
+        },
+        {
+          "category": "ГОРЯЧЕЕ",
+          "name": "Пожарская котлета",
+          "price": 1350
+        },
+        {
+          "category": "ДЕСЕРТЫ",
+          "name": "Наполеон",
+          "price": 650
+        }
+      ],
+      "is_reference_place": true
+    },
+    "Birds": {
+      "status": "no_api_key",
+      "menu_urls": [
+        "https://birds.moscow/menu"
+      ],
+      "items": []
+    }
+  }
+}

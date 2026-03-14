@@ -1,0 +1,41 @@
+{
+  "block": "block2_menu",
+  "source_csv": "/Users/danilapertsev/Desktop/ms_v2/final_blyat_v3.csv",
+  "menu_by_place": {
+    "Gussi": {
+      "status": "parsed",
+      "menu_urls": [
+        "https://www.restoclub.ru/uploads/menufile/e/9/9/3/e9930fbfa951765ae7a6ed63d98e47f2.pdf"
+      ],
+      "items_count": 4,
+      "has_kids_menu": false,
+      "categories": ["ЗАКУСКИ", "СУПЫ", "ДЕСЕРТЫ"],
+      "items": [
+        {
+          "category": "ЗАКУСКИ",
+          "name": "Паштет из гуся",
+          "price": 790
+        },
+        {
+          "category": "СУПЫ",
+          "name": "Борщ с гусем",
+          "price": 850
+        },
+        {
+          "category": "ДЕСЕРТЫ",
+          "name": "Медовик",
+          "price": 490
+        },
+        {
+          "category": "ДЕСЕРТЫ",
+          "name": "Пломбир с ягодами",
+          "price": 420
+        }
+      ]
+    },
+    "Bosco Café": {
+      "status": "no_menu_links",
+      "items": []
+    }
+  }
+}

@@ -1,0 +1,47 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "market/block6_output.schema.json",
+  "title": "Market Block6 Output",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["block", "mode", "input_sources", "report_md", "sections"],
+  "properties": {
+    "block": { "const": "block6_aggregator" },
+    "mode": { "const": "market" },
+    "input_sources": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["block1", "block2", "block3", "block4", "block5"],
+      "properties": {
+        "block1": { "type": "string", "minLength": 1 },
+        "block2": { "type": "string", "minLength": 1 },
+        "block3": { "type": "string", "minLength": 1 },
+        "block4": { "type": "string", "minLength": 1 },
+        "block5": { "type": "string", "minLength": 1 }
+      }
+    },
+    "report_md": { "type": "string", "minLength": 1 },
+    "sections": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "анализ рынка",
+        "анализ меню",
+        "анализ отзывов",
+        "анализ маркетинга",
+        "анализ сайтов",
+        "рекомендации по нише",
+        "справочная информация"
+      ],
+      "properties": {
+        "анализ рынка": { "type": "string" },
+        "анализ меню": { "type": "string" },
+        "анализ отзывов": { "type": "string" },
+        "анализ маркетинга": { "type": "string" },
+        "анализ сайтов": { "type": "string" },
+        "рекомендации по нише": { "type": "string" },
+        "справочная информация": { "type": "string" }
+      }
+    }
+  }
+}

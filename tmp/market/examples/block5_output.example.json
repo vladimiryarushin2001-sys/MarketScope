@@ -1,0 +1,21 @@
+{
+  "block": "block5_tech",
+  "tech_by_place": {
+    "Gussi": {
+      "url": "https://www.gussi-gussi.com/moscow",
+      "status_code": 200,
+      "load_time_sec": 1.34,
+      "mobile_load_time_sec": 2.18,
+      "page_size_kb": 912.5,
+      "title": "Gussi Moscow",
+      "meta_description": "Ресторан авторской кухни Gussi в Москве.",
+      "https": true,
+      "has_viewport": true,
+      "error": null
+    },
+    "Savoy": {
+      "url": "https://savoy.rest",
+      "error": "timeout while fetching page"
+    }
+  }
+}

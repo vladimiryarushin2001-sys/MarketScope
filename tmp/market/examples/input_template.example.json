@@ -1,0 +1,15 @@
+{
+  "report_type": "market",
+  "mode": "template",
+  "top_n": 5,
+  "source_csv": "/Users/danilapertsev/Desktop/ms_v2/final_blyat_v3.csv",
+  "enrich_with_perplexity": true,
+  "perplexity_model": "sonar",
+  "template": {
+    "types": ["ресторан", "премиум-ресторан"],
+    "cuisines": ["русская", "европейская"],
+    "price_min": 2000,
+    "price_max": 5000,
+    "особенности": "панорамный вид, авторская кухня, центр Москвы"
+  }
+}

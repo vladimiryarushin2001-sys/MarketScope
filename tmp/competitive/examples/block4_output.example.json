@@ -1,0 +1,42 @@
+{
+  "block": "block4_marketing",
+  "marketing_by_place": {
+    "Ruski": {
+      "сайт": "https://ruski.com",
+      "соцсети": [
+        {
+          "network": "telegram",
+          "url": "https://t.me/ruski_rest"
+        },
+        {
+          "network": "instagram",
+          "url": "https://instagram.com/ruski_rest"
+        }
+      ],
+      "программа_лояльности": {
+        "has_loyalty": true,
+        "loyalty_name": "Ruski Club",
+        "loyalty_format": ["кэшбэк", "спецпредложения"],
+        "loyalty_cost_per_point": "1 балл = 1 рубль",
+        "loyalty_how_to_earn": "Бонусы начисляются после регистрации и оплаты счета"
+      },
+      "is_reference_place": true
+    },
+    "Birds": {
+      "сайт": "https://birds.moscow",
+      "соцсети": [
+        {
+          "network": "instagram",
+          "url": "https://instagram.com/birds.moscow"
+        }
+      ],
+      "программа_лояльности": {
+        "has_loyalty": false,
+        "loyalty_name": null,
+        "loyalty_format": null,
+        "loyalty_cost_per_point": null,
+        "loyalty_how_to_earn": null
+      }
+    }
+  }
+}

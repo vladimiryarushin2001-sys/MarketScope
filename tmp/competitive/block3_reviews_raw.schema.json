@@ -1,0 +1,44 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "competitive/block3_reviews_raw.schema.json",
+  "title": "Competitive Block3 Raw Reviews",
+  "type": "array",
+  "items": {
+    "type": "object",
+    "additionalProperties": false,
+    "required": ["place_name", "place_address", "org_id", "error", "company_info", "reviews"],
+    "properties": {
+      "place_name": { "type": "string", "minLength": 1 },
+      "place_address": { "type": "string" },
+      "org_id": { "type": "string", "minLength": 1 },
+      "error": { "type": ["string", "null"] },
+      "company_info": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["name", "rating", "count_rating", "stars"],
+        "properties": {
+          "name": { "type": "string" },
+          "rating": { "type": "number" },
+          "count_rating": { "type": "integer", "minimum": 0 },
+          "stars": { "type": "integer", "minimum": 0 }
+        }
+      },
+      "reviews": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["name", "icon_href", "date", "text", "stars", "answer"],
+          "properties": {
+            "name": { "type": "string" },
+            "icon_href": { "type": "string" },
+            "date": { "type": "number" },
+            "text": { "type": "string" },
+            "stars": { "type": "integer", "minimum": 0, "maximum": 5 },
+            "answer": { "type": "string" }
+          }
+        }
+      }
+    }
+  }
+}
