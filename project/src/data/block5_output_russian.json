@@ -1,0 +1,117 @@
+{
+  "block": "block5_tech",
+  "tech_by_place": {
+    "Ruski": {
+      "url": "https://ruski354.ru",
+      "status_code": 200,
+      "load_time_sec": 0.09,
+      "mobile_load_time_sec": 0.05,
+      "page_size_kb": 142.48,
+      "title": "Панорамный ресторан RUSKI в Москва – сити – меню от шеф-повара Александра Волкова-Медведева",
+      "meta_description": "Ruski — видовой ресторан русской кухни в башне Око – банкетный зал",
+      "https": true,
+      "has_viewport": true,
+      "error": null
+    },
+    "Kalinka": {
+      "url": "https://kalinkananeglinke.ru",
+      "status_code": 200,
+      "load_time_sec": 0.14,
+      "mobile_load_time_sec": 0.12,
+      "page_size_kb": 113.37,
+      "title": "Ресторан Калинка на Неглинке на Неглинной в Москве",
+      "meta_description": "Колоритный ресторан Калинка на Неглинке на Неглинной улице с русскими блюдами в авторском прочтении и самобытным интерьером в купеческом стиле",
+      "https": true,
+      "has_viewport": true,
+      "error": null
+    },
+    "Есения": {
+      "url": "http://esenia.rest",
+      "status_code": 200,
+      "load_time_sec": 0.05,
+      "mobile_load_time_sec": 0.04,
+      "page_size_kb": 160.65,
+      "title": "Бистро русской кухни в Царицыно",
+      "meta_description": "Ресторан русской кухни в Царицыно. Москва, ул. Тюрина, 1.",
+      "https": false,
+      "has_viewport": true,
+      "error": null
+    },
+    "Uhvat": {
+      "url": "https://uhvat.restaurant",
+      "status_code": 200,
+      "load_time_sec": 0.46,
+      "mobile_load_time_sec": 0.12,
+      "page_size_kb": 268.99,
+      "title": "О ресторане",
+      "meta_description": "Ресторан Ухват - Традиционная еда из печей ",
+      "https": true,
+      "has_viewport": true,
+      "error": null
+    },
+    "Окно": {
+      "url": "https://oknohotel.com/restoran/",
+      "status_code": 200,
+      "load_time_sec": 0.47,
+      "mobile_load_time_sec": 0.3,
+      "page_size_kb": 67.7,
+      "title": "Зал ресторана ОКНО идеально подходит для проведения бизнес мероприятий любого формата.",
+      "meta_description": "В ресторане апарт-отеля ОКНО доступны все необходимые технические средства для проведения презентаций и встреч. Волшебство северного сияния в центре Москвы.",
+      "https": true,
+      "has_viewport": true,
+      "error": null
+    },
+    "Страна которой нет": {
+      "url": "https://stranakotoroynet.ru",
+      "status_code": 200,
+      "load_time_sec": 0.07,
+      "mobile_load_time_sec": 0.08,
+      "page_size_kb": 103.12,
+      "title": "Страна которой нет",
+      "meta_description": "Вкуснейшие роллы и суши с доставкой по Москве в течение 60 минут!",
+      "https": true,
+      "has_viewport": true,
+      "error": null
+    },
+    "Сибирячка иснегирь": {
+      "url": "https://sibiryachkaisnegirrest.ru",
+      "status_code": 200,
+      "load_time_sec": 0.13,
+      "mobile_load_time_sec": 0.11,
+      "page_size_kb": 125.6,
+      "title": "Ресторан Сибирячка и Снегирь в Большом Спасоглинищевском в Москве",
+      "meta_description": "Концептуальное кафе Сибирячка и Снегирь в центре Москвы с авторским меню с сибирскими нотками и стильным оформлением с русскими мотивами",
+      "https": true,
+      "has_viewport": true,
+      "error": null
+    },
+    "Ямщик": {
+      "url": "https://restoran-yamshchik.ru",
+      "status_code": null,
+      "load_time_sec": 0,
+      "mobile_load_time_sec": null,
+      "page_size_kb": 0,
+      "title": null,
+      "meta_description": null,
+      "https": true,
+      "has_viewport": false,
+      "error": "HTTPSConnectionPool(host='restoran-yamshchik.ru', port=443): Max retries exceeded with url: / (Caused by NewConnectionError(\"HTTPSConnection(host='restoran-yamshchik.ru', port=443): Failed to establish a new connection: [Errno 61] Connection refused\"))"
+    },
+    "Таежные дачи": {
+      "url": null,
+      "error": "сайт не указан или невалидный URL"
+    },
+    "Матрешка": {
+      "url": "https://matryoshka-rest.ru",
+      "status_code": 200,
+      "load_time_sec": 0.86,
+      "mobile_load_time_sec": 0.97,
+      "page_size_kb": 41.12,
+      "title": "Ресторан Матрёшка — Проводник в мир Русской кухни",
+      "meta_description": null,
+      "https": true,
+      "has_viewport": true,
+      "error": null
+    }
+  }
+}

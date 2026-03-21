@@ -12,23 +12,6 @@ const InsightsBlock: React.FC<InsightsBlockProps> = ({
   type = 'insights', 
   insights 
 }) => {
-  const normalize = (raw: string): string[] => {
-    const cleaned = (raw || '')
-      .replace(/[*#`]/g, '')
-      .replace(/\r/g, '\n')
-      .split('\n')
-      .map((s) => s.trim())
-      .filter(Boolean)
-      .join(' ');
-    if (!cleaned) return [];
-    return cleaned
-      .split(/\s*[-•]\s+|\.\s+|!\s+|\?\s+/g)
-      .map((s) => s.trim())
-      .filter(Boolean);
-  };
-
-  const normalizedInsights = insights.flatMap((ins) => normalize(ins));
-
   const getIcon = () => {
     switch (type) {
       case 'strategy':
@@ -57,7 +40,7 @@ const InsightsBlock: React.FC<InsightsBlockProps> = ({
         <h3 className="text-lg font-semibold text-gray-900">{title}</h3>
       </div>
       <div className="space-y-3">
-        {normalizedInsights.map((insight, index) => (
+        {insights.map((insight, index) => (
           <div 
             key={index}
             className={`flex items-start space-x-3 p-3 bg-white rounded-lg border-l-4 ${getBorderColor()} shadow-xs`}

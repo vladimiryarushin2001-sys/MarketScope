@@ -1,0 +1,47 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "competitive/block6_output.schema.json",
+  "title": "Competitive Block6 Output",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["block", "mode", "input_sources", "report_md", "sections"],
+  "properties": {
+    "block": { "const": "block6_aggregator" },
+    "mode": { "const": "competitive" },
+    "input_sources": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["block1", "block2", "block3", "block4", "block5"],
+      "properties": {
+        "block1": { "type": "string", "minLength": 1 },
+        "block2": { "type": "string", "minLength": 1 },
+        "block3": { "type": "string", "minLength": 1 },
+        "block4": { "type": "string", "minLength": 1 },
+        "block5": { "type": "string", "minLength": 1 }
+      }
+    },
+    "report_md": { "type": "string", "minLength": 1 },
+    "sections": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "позиционирование",
+        "меню",
+        "отзывы",
+        "маркетинг",
+        "техническая часть",
+        "бизнес-рекомендации",
+        "справочная информация"
+      ],
+      "properties": {
+        "позиционирование": { "type": "string" },
+        "меню": { "type": "string" },
+        "отзывы": { "type": "string" },
+        "маркетинг": { "type": "string" },
+        "техническая часть": { "type": "string" },
+        "бизнес-рекомендации": { "type": "string" },
+        "справочная информация": { "type": "string" }
+      }
+    }
+  }
+}

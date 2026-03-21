@@ -1,40 +1,56 @@
-import type { Restaurant } from '../types';
+import type { CompetitorData } from '../types';
+import { performanceData, getTimeDependentData } from '../data/mockData';
 
-export const getRestaurantName = (id: number | 'all', restaurantList: Restaurant[]): string => {
-  if (id === 'all') return 'Все рестораны';
-  const restaurant = restaurantList.find(r => r.id === id);
-  return restaurant ? restaurant.name : 'Все рестораны';
+export const getCompetitorName = (id: string, competitorsList: CompetitorData[]): string => {
+  const competitor = competitorsList.find(comp => comp.id === id);
+  return competitor ? competitor.name : 'Все конкуренты';
 };
 
-export const getFilteredRestaurantData = (selectedRestaurant: number | 'all', restaurantList: Restaurant[], timeRange: string) => {
-  if (selectedRestaurant === 'all') {
+export const getFilteredData = (selectedCompetitor: string, competitorsList: CompetitorData[], timeRange: string) => {
+  const currentPerformanceData = performanceData[timeRange] || performanceData['30d'];
+  
+  if (selectedCompetitor === 'all') {
     return {
-      restaurants: restaurantList,
+      competitors: competitorsList,
+      performanceData: currentPerformanceData,
       showAll: true
     };
   }
-  const filteredRestaurant = restaurantList.find(r => r.id === selectedRestaurant);
+  
+  const filteredCompetitor = competitorsList.find(comp => comp.id === selectedCompetitor);
   return {
-    restaurants: filteredRestaurant ? [filteredRestaurant] : [],
+    competitors: filteredCompetitor ? [filteredCompetitor] : [],
+    performanceData: currentPerformanceData.map((item: any) => {
+      const competitorKey = `competitor${selectedCompetitor}` as keyof typeof item;
+      return {
+        month: item.month,
+        [competitorKey]: item[competitorKey]
+      };
+    }),
     showAll: false
   };
 };
 
-export const getMetricsForRestaurant = (timeRange: string, selectedRestaurant: number | 'all', restaurantList: Restaurant[]) => {
-  // Пример: возвращаем средний чек и тип кухни
-  if (selectedRestaurant === 'all') {
+export const getMetricsForTimeRange = (timeRange: string, selectedCompetitor: string, competitors: CompetitorData[]) => {
+  const timeData = getTimeDependentData(timeRange);
+  
+  if (selectedCompetitor === 'all') {
     return {
-      avg_check: Math.round(
-        restaurantList.reduce((sum, r) => sum + r.avg_check, 0) / restaurantList.length
-      ),
-      cuisine: 'Все кухни',
+      rating: timeData.rating,
+      marketShare: `${timeData.marketShare}%`,
+      sentimentScore: `${timeData.sentimentScore}%`,
+      seoScore: timeData.seoScore.toString(),
     };
   }
-  const restaurant = restaurantList.find(r => r.id === selectedRestaurant);
-  if (!restaurant) return { avg_check: 0, cuisine: '' };
+
+  const competitor = competitors.find(c => c.id === selectedCompetitor);
+  if (!competitor) return timeData;
+
   return {
-    avg_check: restaurant.avg_check,
-    cuisine: restaurant.cuisine,
+    rating: (competitor.rating * (parseFloat(timeData.rating) / 4.4)).toFixed(1),
+    marketShare: Math.round(competitor.marketShare * (timeData.marketShare / 53)),
+    sentimentScore: Math.round(competitor.sentimentScore * (timeData.sentimentScore / 79)),
+    seoScore: Math.round(competitor.seoScore * (timeData.seoScore / 88)),
   };
 };
 

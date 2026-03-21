@@ -12,16 +12,11 @@ dist
 dist-ssr
 *.local
 
-# Supabase CLI local state (project ref, versions)
-supabase/.temp/
-
 # Vite cache artifacts
 vite.config.ts.timestamp-*.mjs
 
-# Env / secrets (never commit)
-.env
-.env.*
-!.env.example
+# Supabase CLI local state
+supabase/.temp/
 
 # Editor directories and files
 .vscode/*

@@ -1,0 +1,41 @@
+{
+  "block": "block4_marketing",
+  "marketing_by_place": {
+    "Gussi": {
+      "сайт": "https://www.gussi-gussi.com/moscow",
+      "соцсети": [
+        {
+          "network": "telegram",
+          "url": "https://t.me/gussi_msk"
+        },
+        {
+          "network": "instagram",
+          "url": "https://instagram.com/gussi_msk"
+        }
+      ],
+      "программа_лояльности": {
+        "has_loyalty": true,
+        "loyalty_name": "Gussi Friends",
+        "loyalty_format": ["бонусы", "спецпредложения"],
+        "loyalty_cost_per_point": 1,
+        "loyalty_how_to_earn": "Начисление бонусов за каждый заказ после регистрации по номеру телефона"
+      }
+    },
+    "Savoy": {
+      "сайт": "https://savoy.rest",
+      "соцсети": [
+        {
+          "network": "vk",
+          "url": "https://vk.com/savoy_rest"
+        }
+      ],
+      "программа_лояльности": {
+        "has_loyalty": false,
+        "loyalty_name": null,
+        "loyalty_format": null,
+        "loyalty_cost_per_point": null,
+        "loyalty_how_to_earn": null
+      }
+    }
+  }
+}

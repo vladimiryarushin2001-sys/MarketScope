@@ -1,0 +1,22 @@
+{
+  "block": "block5_tech",
+  "tech_by_place": {
+    "Ruski": {
+      "url": "https://ruski.com",
+      "status_code": 200,
+      "load_time_sec": 1.52,
+      "mobile_load_time_sec": 2.41,
+      "page_size_kb": 1040.2,
+      "title": "Ruski Restaurant",
+      "meta_description": "Панорамный ресторан русской кухни в Москва-Сити.",
+      "https": true,
+      "has_viewport": true,
+      "error": null,
+      "is_reference_place": true
+    },
+    "Birds": {
+      "url": "https://birds.moscow",
+      "error": "ssl handshake error"
+    }
+  }
+}

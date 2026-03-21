@@ -1,5 +1,5 @@
 import React from 'react';
-import { BarChart3, Globe, MessageSquare, Target, ShoppingCart, FileText, User, PlusCircle, CreditCard } from 'lucide-react';
+import { BarChart3, Globe, MessageSquare, DollarSign, Target, ShoppingCart } from 'lucide-react';
 
 interface NavigationProps {
   activeTab: string;
@@ -8,15 +8,12 @@ interface NavigationProps {
 
 const Navigation: React.FC<NavigationProps> = ({ activeTab, setActiveTab }) => {
   const tabs = [
-    { id: 'new_request', label: 'Новый запрос', icon: PlusCircle },
-    { id: 'subscription', label: 'Подписка', icon: CreditCard },
     { id: 'overview', label: 'Обзор', icon: BarChart3 },
     { id: 'technical', label: 'Технический анализ', icon: Globe },
     { id: 'reviews', label: 'Анализ отзывов', icon: MessageSquare },
+    { id: 'financial', label: 'Финансы', icon: DollarSign },
     { id: 'marketing', label: 'Маркетинг', icon: Target },
-    { id: 'pricing', label: 'Меню', icon: ShoppingCart },
-    { id: 'strategic', label: 'Стратегические предложения', icon: FileText },
-    { id: 'cabinet', label: 'Личный кабинет', icon: User },
+    { id: 'pricing', label: 'Цены', icon: ShoppingCart },
   ];
 
   return (

@@ -1,29 +1,22 @@
 import React from 'react';
-import { Target, LogOut } from 'lucide-react';
-import { useAuth } from '../../contexts/AuthContext';
-import type { AnalysisRun, ClientRequest } from '../../types';
+import { Download, RefreshCw, Target } from 'lucide-react';
+import type { TimeRange } from '../../types';
 
 interface HeaderProps {
-  requests: ClientRequest[];
-  runs: AnalysisRun[];
-  selectedRequestId: number | null;
-  onSelectRequest: (requestId: number) => void;
+  timeRange: string;
+  setTimeRange: (range: string) => void;
+  isLoading: boolean;
+  handleRefresh: () => void;
+  timeRanges: TimeRange[];
 }
 
-const Header: React.FC<HeaderProps> = ({ requests, selectedRequestId, onSelectRequest }) => {
-  const { signOut } = useAuth();
-
-  const typeLabel = (t: string) =>
-    t === 'market_overview' ? 'Обзор рынка' : t === 'competitive_analysis' ? 'Конкурентный анализ' : t || '—';
-
-  const formatDate = (dt: string) => {
-    try {
-      return new Date(dt).toLocaleString('ru-RU');
-    } catch {
-      return dt;
-    }
-  };
-
+const Header: React.FC<HeaderProps> = ({ 
+  timeRange, 
+  setTimeRange, 
+  isLoading, 
+  handleRefresh,
+  timeRanges 
+}) => {
   return (
     <header className="bg-white shadow-sm border-b border-gray-200">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -39,35 +32,25 @@ const Header: React.FC<HeaderProps> = ({ requests, selectedRequestId, onSelectRe
               Анализ конкурентов HoReCa
             </span>
           </div>
-          <div className="flex items-center gap-3">
-            <div className="flex items-center gap-2">
-              <span className="text-sm text-gray-500">Запрос</span>
-              <select
-                className="px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-                value={selectedRequestId ?? ''}
-                onChange={(e) => onSelectRequest(Number(e.target.value))}
-                disabled={!requests.length}
-              >
-                {!requests.length && <option value="">Нет запросов</option>}
-                {requests.map((req, idx) => {
-                  const displayNumber = idx + 1;
-                  const label = `${formatDate(req.created_at)} · #${displayNumber} · ${typeLabel(req.request_type ?? '')}`;
-                  return (
-                    <option key={req.id} value={req.id}>
-                      {label}
-                    </option>
-                  );
-                })}
-              </select>
-            </div>
-            <button
-              type="button"
-              onClick={() => signOut()}
-              className="flex items-center gap-1.5 px-3 py-2 text-sm text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg transition-colors"
-              title="Выйти"
+          <div className="flex items-center space-x-4">
+            <select
+              className="px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+              value={timeRange}
+              onChange={(e) => setTimeRange(e.target.value)}
             >
-              <LogOut className="w-4 h-4" />
-              <span>Выйти</span>
+              {timeRanges.map((range) => (
+                <option key={range.id} value={range.id}>
+                  {range.label}
+                </option>
+              ))}
+            </select>
+            <button
+              onClick={handleRefresh}
+              className="p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg transition-colors"
+            >
+              <RefreshCw
+                className={`w-5 h-5 ${isLoading ? 'animate-spin' : ''}`}
+              />
             </button>
           </div>
         </div>

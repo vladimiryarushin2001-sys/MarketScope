@@ -1,248 +1,173 @@
+// import type { CompetitorData, SeoMetric, ReviewTopic, MarketingChannel, PriceComparison } from '../types';
+import type { CompetitorData, SeoMetric, ReviewTopic, MarketingChannel, PriceComparison, PerformanceData, TimeRange } from '../types';
 
-import type {
-  Restaurant,
-  Menu,
-  MenuItem,
-  Review,
-  Marketing,
-  MarketingSocial,
-  MarketingLoyalty,
-  TechnicalAnalysis,
-  StrategicReport,
-  UserProfile,
-  Subscription,
-  CompetitorData,
-  ReviewTopic,
-  MarketingChannel,
-} from '../types';
-import { restaurantsToCompetitorData } from './adapters';
-
-export const restaurants: Restaurant[] = [
+export const competitors: CompetitorData[] = [
   {
-    id: 1,
-    name: 'Ruski',
-    address: 'Москва-Сити, Пресненская наб., 12',
-    type: 'Панорамный ресторан',
-    cuisine: 'Русская',
-    avg_check: 2500,
-    description: 'Панорамный ресторан русской кухни в Москва-Сити.',
-    link: 'https://ruski.com',
-    cosine_score: 0.95,
-    site: 'https://ruski.com',
-    delivery: true,
-    working_hours: '10:00-23:00',
+    id: '1',
+    name: 'Вкусно и точка',
+    website: 'vkusnoitochka.ru',
+    rating: 4.2,
+    marketShare: 18,
+    sentimentScore: 72,
+    financialHealth: 85,
+    priceIndex: 95,
+    seoScore: 88,
+    loadTime: 2.3,
+    reviewCount: 15420,
   },
   {
-    id: 2,
-    name: 'Birds',
-    address: 'Москва-Сити, Пресненская наб., 12',
-    type: 'Бар-ресторан',
-    cuisine: 'Европейская',
-    avg_check: 1800,
-    description: 'Бар с шоу-программой и коктейлями.',
-    link: 'https://birds.moscow',
-    cosine_score: 0.89,
-    site: 'https://birds.moscow',
-    delivery: false,
-    working_hours: '12:00-02:00',
-  },
-];
-
-export const menus: Menu[] = [
-  {
-    id: 1,
-    restaurant_id: 1,
-    status: 'parsed',
-    menu_urls: ['https://ruski.com/menu.pdf'],
-    items_count: 3,
-    has_kids_menu: true,
-    categories: ['Основные блюда', 'Десерты', 'Напитки'],
+    id: '2',
+    name: 'Теремок',
+    website: 'teremok.ru',
+    rating: 4.5,
+    marketShare: 12,
+    sentimentScore: 81,
+    financialHealth: 78,
+    priceIndex: 102,
+    seoScore: 92,
+    loadTime: 1.8,
+    reviewCount: 12350,
   },
   {
-    id: 2,
-    restaurant_id: 2,
-    status: 'parsed',
-    menu_urls: ['https://birds.moscow/menu.pdf'],
-    items_count: 2,
-    has_kids_menu: false,
-    categories: ['Бар', 'Основные блюда'],
+    id: '3',
+    name: 'Шоколадница',
+    website: 'shoko.ru',
+    rating: 4.3,
+    marketShare: 15,
+    sentimentScore: 76,
+    financialHealth: 82,
+    priceIndex: 110,
+    seoScore: 85,
+    loadTime: 2.1,
+    reviewCount: 18900,
+  },
+  {
+    id: '4',
+    name: 'Кофемания',
+    website: 'coffeemania.ru',
+    rating: 4.6,
+    marketShare: 8,
+    sentimentScore: 88,
+    financialHealth: 90,
+    priceIndex: 125,
+    seoScore: 90,
+    loadTime: 1.5,
+    reviewCount: 8750,
   },
 ];
 
-export const menuItems: MenuItem[] = [
-  { id: 1, menu_id: 1, category: 'Основные блюда', name: 'Борщ', price: 450 },
-  { id: 2, menu_id: 1, category: 'Десерты', name: 'Медовик', price: 350 },
-  { id: 3, menu_id: 1, category: 'Напитки', name: 'Морс', price: 200 },
-  { id: 4, menu_id: 2, category: 'Бар', name: 'Коктейль Birds', price: 700 },
-  { id: 5, menu_id: 2, category: 'Основные блюда', name: 'Стейк', price: 1200 },
+// Добавим разные наборы данных для разных периодов
+export const timeRanges: TimeRange[] = [
+  { id: '7d', label: '7 дней', days: 7 },
+  { id: '30d', label: '30 дней', days: 30 },
+  { id: '90d', label: '90 дней', days: 90 },
+  { id: '1y', label: '1 год', days: 365 },
 ];
 
-export const reviews: Review[] = [
-  {
-    id: 1,
-    restaurant_id: 1,
-    summary_mode: 'perplexity',
-    reviews_count: 132,
-    general_info: 'Гости отмечают панорамный вид и сильную кухню, жалобы на ожидание в пиковые часы.',
-    positive: 'Панорамный вид; Сильные десерты; Запоминающаяся атмосфера',
-    negative: 'Ожидание горячих блюд; Высокий шум при полной посадке',
-  },
-  {
-    id: 2,
-    restaurant_id: 2,
-    summary_mode: 'perplexity',
-    reviews_count: 88,
-    general_info: 'Конкурент выигрывает по вечерней атмосфере и барной составляющей, уступает по кухне.',
-    positive: 'Коктейли; Шоу-атмосфера',
-    negative: 'Неровное качество блюд',
-  },
-];
+export const performanceData: Record<string, PerformanceData[]> = {
+  '7d': [
+    { month: 'Пн', competitor1: 85, competitor2: 78, competitor3: 82, competitor4: 90 },
+    { month: 'Вт', competitor1: 87, competitor2: 80, competitor3: 84, competitor4: 88 },
+    { month: 'Ср', competitor1: 86, competitor2: 82, competitor3: 85, competitor4: 91 },
+    { month: 'Чт', competitor1: 88, competitor2: 85, competitor3: 83, competitor4: 92 },
+    { month: 'Пт', competitor1: 90, competitor2: 87, competitor3: 86, competitor4: 93 },
+    { month: 'Сб', competitor1: 92, competitor2: 88, competitor3: 88, competitor4: 94 },
+    { month: 'Вс', competitor1: 91, competitor2: 89, competitor3: 87, competitor4: 95 },
+  ],
+  '30d': [
+    { month: 'Неделя 1', competitor1: 85, competitor2: 78, competitor3: 82, competitor4: 90 },
+    { month: 'Неделя 2', competitor1: 87, competitor2: 80, competitor3: 84, competitor4: 88 },
+    { month: 'Неделя 3', competitor1: 86, competitor2: 82, competitor3: 85, competitor4: 91 },
+    { month: 'Неделя 4', competitor1: 88, competitor2: 85, competitor3: 83, competitor4: 92 },
+  ],
+  '90d': [
+    { month: 'Янв', competitor1: 85, competitor2: 78, competitor3: 82, competitor4: 90 },
+    { month: 'Фев', competitor1: 87, competitor2: 80, competitor3: 84, competitor4: 88 },
+    { month: 'Мар', competitor1: 86, competitor2: 82, competitor3: 85, competitor4: 91 },
+  ],
+  '1y': [
+    { month: 'Янв', competitor1: 85, competitor2: 78, competitor3: 82, competitor4: 90 },
+    { month: 'Фев', competitor1: 87, competitor2: 80, competitor3: 84, competitor4: 88 },
+    { month: 'Мар', competitor1: 86, competitor2: 82, competitor3: 85, competitor4: 91 },
+    { month: 'Апр', competitor1: 88, competitor2: 85, competitor3: 83, competitor4: 92 },
+    { month: 'Май', competitor1: 90, competitor2: 87, competitor3: 86, competitor4: 93 },
+    { month: 'Июн', competitor1: 92, competitor2: 88, competitor3: 88, competitor4: 94 },
+    { month: 'Июл', competitor1: 91, competitor2: 89, competitor3: 87, competitor4: 95 },
+    { month: 'Авг', competitor1: 93, competitor2: 90, competitor3: 89, competitor4: 96 },
+    { month: 'Сен', competitor1: 94, competitor2: 91, competitor3: 90, competitor4: 97 },
+    { month: 'Окт', competitor1: 95, competitor2: 92, competitor3: 91, competitor4: 98 },
+    { month: 'Ноя', competitor1: 96, competitor2: 93, competitor3: 92, competitor4: 99 },
+    { month: 'Дек', competitor1: 97, competitor2: 94, competitor3: 93, competitor4: 100 },
+  ],
+};
 
-export const marketing: Marketing[] = [
-  { id: 1, restaurant_id: 1, site: 'https://ruski.com' },
-  { id: 2, restaurant_id: 2, site: 'https://birds.moscow' },
-];
+// Добавим данные, которые зависят от времени
+export const getTimeDependentData = (timeRange: string) => {
+  const baseMetrics = {
+    rating: 4.4,
+    marketShare: 53,
+    sentimentScore: 79,
+    seoScore: 88,
+  };
 
-export const marketingSocials: MarketingSocial[] = [
-  { id: 1, marketing_id: 1, network: 'telegram', url: 'https://t.me/ruski_rest' },
-  { id: 2, marketing_id: 1, network: 'instagram', url: 'https://instagram.com/ruski_rest' },
-  { id: 3, marketing_id: 2, network: 'instagram', url: 'https://instagram.com/birds.moscow' },
-];
+  const multipliers = {
+    '7d': 1,
+    '30d': 1.02,
+    '90d': 1.05,
+    '1y': 1.1,
+  };
 
-export const marketingLoyalty: MarketingLoyalty[] = [
-  {
-    id: 1,
-    marketing_id: 1,
-    has_loyalty: true,
-    loyalty_name: 'Ruski Club',
-    loyalty_format: ['кэшбэк', 'спецпредложения'],
-    loyalty_cost_per_point: '1',
-    loyalty_how_to_earn: 'Бонусы начисляются после регистрации и оплаты счета',
-  },
-  {
-    id: 2,
-    marketing_id: 2,
-    has_loyalty: false,
-    loyalty_name: '',
-    loyalty_format: [],
-    loyalty_cost_per_point: '',
-    loyalty_how_to_earn: '',
-  },
-];
+  const multiplier = multipliers[timeRange as keyof typeof multipliers] || 1;
 
-export const technicalAnalysis: TechnicalAnalysis[] = [
+  return {
+    rating: (baseMetrics.rating * multiplier).toFixed(1),
+    marketShare: Math.round(baseMetrics.marketShare * multiplier),
+    sentimentScore: Math.round(baseMetrics.sentimentScore * multiplier),
+    seoScore: Math.round(baseMetrics.seoScore * multiplier),
+  };
+};
+
+export const seoMetrics: SeoMetric[] = [
+  { metric: 'Скорость загрузки', current: 2.1, optimal: 1.5, unit: 'сек' },
+  { metric: 'Mobile-friendly', current: 92, optimal: 100, unit: '%' },
+  { metric: 'Индексация', current: 85, optimal: 95, unit: '%' },
+  { metric: 'Обратные ссылки', current: 1250, optimal: 2000, unit: 'шт' },
   {
-    id: 1,
-    restaurant_id: 1,
-    url: 'https://ruski.com',
-    status_code: 200,
-    load_time_sec: 1.52,
-    mobile_load_time_sec: 2.41,
-    page_size_kb: 1040.2,
-    title: 'Ruski Restaurant',
-    meta_description: 'Панорамный ресторан русской кухни в Москва-Сити.',
-    https: true,
-    has_viewport: true,
-    error: '',
-  },
-  {
-    id: 2,
-    restaurant_id: 2,
-    url: 'https://birds.moscow',
-    status_code: 0,
-    load_time_sec: 0,
-    mobile_load_time_sec: 0,
-    page_size_kb: 0,
-    title: '',
-    meta_description: '',
-    https: false,
-    has_viewport: false,
-    error: 'ssl handshake error',
+    metric: 'Органический трафик',
+    current: 45000,
+    optimal: 60000,
+    unit: 'визитов',
   },
 ];
-
-export const strategicReport: StrategicReport[] = [
-  {
-    id: 1,
-    restaurant_id: 1,
-    block1: 'block1_output.json',
-    block2: 'block2_output.json',
-    block3: 'block3_output.json',
-    block4: 'block4_output.json',
-    block5: 'block5_output.json',
-    report_md: '# Конкурентный отчет\n\n## Позиционирование\nRuski удерживает сильную видовую премиальную позицию.',
-    positioning: 'Ruski выигрывает за счет русской кухни и панорамы, Birds сильнее в вечернем сценарии.',
-    menu: 'У Ruski меню более цельное и считывается как гастрономическое, у Birds акцент смещен в бар и event-составляющую.',
-    reviews: 'У reference-заведения сильнее кухня и вид, у конкурента выше доля упоминаний атмосферы и шоу.',
-    marketing: 'Оба игрока присутствуют в соцсетях, но у Ruski лучше упакована программа лояльности.',
-    technical_part: 'У Ruski сайт стабильнее, у конкурента заметны технические проблемы доступа.',
-    business_recommendations: 'Стоит усиливать скорость сервиса и яснее выносить фирменные блюда в коммуникацию.',
-    reference_info: 'Раздел собран на основе выходов блоков 1-5.',
-  },
-];
-
-const techMap = new Map(technicalAnalysis.map((t) => [t.restaurant_id, t]));
-const reviewMap = new Map(reviews.map((r) => [r.restaurant_id, r]));
-const marketingChannelsByRestaurant = new Map<number, MarketingChannel[]>([
-  [1, [{ channel: 'Instagram', reach: 45000, engagement: 4.2, cost: 85000 }, { channel: 'VK', reach: 38000, engagement: 3.8, cost: 62000 }]],
-  [2, [{ channel: 'Instagram', reach: 32000, engagement: 3.8, cost: 65000 }]],
-]);
-
-export const competitors: CompetitorData[] = restaurantsToCompetitorData(
-  restaurants,
-  techMap,
-  reviewMap,
-  marketingChannelsByRestaurant
-);
 
 export const reviewTopics: ReviewTopic[] = [
-  { topic: 'Качество еды', positive: 85, negative: 15 },
-  { topic: 'Обслуживание', positive: 72, negative: 28 },
-  { topic: 'Атмосфера', positive: 90, negative: 10 },
+  { topic: 'Качество еды', positive: 78, negative: 22 },
+  { topic: 'Обслуживание', positive: 82, negative: 18 },
   { topic: 'Цены', positive: 45, negative: 55 },
-];
-
-export const priceComparison: { category: string; comp1?: number; comp2?: number; comp3?: number; comp4?: number }[] = [
-  { category: 'Бизнес-ланч', comp1: 450, comp2: 380 },
-  { category: 'Ужин', comp1: 2500, comp2: 1800 },
-  { category: 'Напитки', comp1: 200, comp2: 350 },
+  { topic: 'Атмосфера', positive: 71, negative: 29 },
+  { topic: 'Чистота', positive: 88, negative: 12 },
+  { topic: 'Скорость', positive: 66, negative: 34 },
 ];
 
 export const marketingChannels: MarketingChannel[] = [
   { channel: 'Instagram', reach: 45000, engagement: 4.2, cost: 85000 },
   { channel: 'VK', reach: 38000, engagement: 3.8, cost: 62000 },
   { channel: 'Яндекс.Директ', reach: 52000, engagement: 2.1, cost: 120000 },
+  { channel: 'Google Ads', reach: 28000, engagement: 2.5, cost: 95000 },
+  { channel: 'Telegram', reach: 15000, engagement: 5.1, cost: 35000 },
 ];
 
-function subscriptionDaysLeft(expiresAt: string): number {
-  const end = new Date(expiresAt);
-  const today = new Date();
-  today.setHours(0, 0, 0, 0);
-  end.setHours(0, 0, 0, 0);
-  return Math.ceil((end.getTime() - today.getTime()) / (1000 * 60 * 60 * 24));
-}
-
-export const userProfile: UserProfile = {
-  id: 1,
-  email: 'client@example.com',
-  full_name: 'Иван Петров',
-  phone: '+7 (495) 123-45-67',
-  company: 'ООО «Ресторан Групп»',
-  position: 'Директор по развитию',
-  created_at: '2024-01-15T10:00:00Z',
-};
-
-export const subscription: Subscription = (() => {
-  const expiresAt = '2025-06-30';
-  const daysLeft = subscriptionDaysLeft(expiresAt);
-  return {
-    id: 1,
-    user_id: 1,
-    plan_name: 'MarketScope Про',
-    is_active: daysLeft > 0,
-    started_at: '2024-07-01',
-    expires_at: expiresAt,
-    days_left: daysLeft,
-  };
-})();
+export const priceComparison: PriceComparison[] = [
+  { category: 'Бизнес-ланч', comp1: 350, comp2: 420, comp3: 480, comp4: 550 },
+  { category: 'Кофе', comp1: 180, comp2: 200, comp3: 220, comp4: 280 },
+  { category: 'Десерты', comp1: 250, comp2: 280, comp3: 320, comp4: 380 },
+  { category: 'Салаты', comp1: 320, comp2: 380, comp3: 420, comp4: 480 },
+  {
+    category: 'Основные блюда',
+    comp1: 450,
+    comp2: 520,
+    comp3: 580,
+    comp4: 650,
+  },
+];
 
