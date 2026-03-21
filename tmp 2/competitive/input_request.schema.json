@@ -1,0 +1,39 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "competitive/input_request.schema.json",
+  "title": "Competitive Input",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "report_type",
+    "top_n",
+    "source_csv",
+    "enrich_with_perplexity",
+    "perplexity_model",
+    "reference_place"
+  ],
+  "properties": {
+    "report_type": { "const": "competitive" },
+    "top_n": { "type": "integer", "minimum": 1 },
+    "source_csv": { "type": "string", "minLength": 1 },
+    "enrich_with_perplexity": { "type": "boolean" },
+    "perplexity_model": { "type": "string", "minLength": 1 },
+    "reference_place": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name", "address", "yandex_maps_link", "website", "menu_files", "menu_file", "menu_url"],
+      "properties": {
+        "name": { "type": "string", "minLength": 1 },
+        "address": { "type": "string", "minLength": 1 },
+        "yandex_maps_link": { "type": "string", "minLength": 1 },
+        "website": { "type": ["string", "null"] },
+        "menu_files": {
+          "type": ["array", "null"],
+          "items": { "type": "string", "minLength": 1 }
+        },
+        "menu_file": { "type": ["string", "null"] },
+        "menu_url": { "type": ["string", "null"] }
+      }
+    }
+  }
+}

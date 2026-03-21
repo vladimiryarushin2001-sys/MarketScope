@@ -1,0 +1,66 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "market/block5_output.schema.json",
+  "title": "Market Block5 Output",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["block", "общий_вывод", "tech_by_place"],
+  "properties": {
+    "block": { "const": "block5_tech" },
+    "общий_вывод": { "type": "string" },
+    "tech_by_place": {
+      "type": "object",
+      "minProperties": 1,
+      "additionalProperties": false,
+      "patternProperties": {
+        "^.+$": { "$ref": "#/$defs/placeTech" }
+      }
+    }
+  },
+  "$defs": {
+    "placeTech": {
+      "oneOf": [
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["url", "error", "вывод"],
+          "properties": {
+            "url": { "type": ["string", "null"] },
+            "error": { "type": "string", "minLength": 1 },
+            "вывод": { "type": "string" }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "url",
+            "status_code",
+            "load_time_sec",
+            "mobile_load_time_sec",
+            "page_size_kb",
+            "title",
+            "meta_description",
+            "https",
+            "has_viewport",
+            "error",
+            "вывод"
+          ],
+          "properties": {
+            "url": { "type": "string", "minLength": 1 },
+            "status_code": { "type": "integer", "minimum": 100, "maximum": 599 },
+            "load_time_sec": { "type": "number", "minimum": 0 },
+            "mobile_load_time_sec": { "type": "number", "minimum": 0 },
+            "page_size_kb": { "type": "number", "minimum": 0 },
+            "title": { "type": ["string", "null"] },
+            "meta_description": { "type": ["string", "null"] },
+            "https": { "type": "boolean" },
+            "has_viewport": { "type": "boolean" },
+            "error": { "type": "null" },
+            "вывод": { "type": "string" }
+          }
+        }
+      ]
+    }
+  }
+}

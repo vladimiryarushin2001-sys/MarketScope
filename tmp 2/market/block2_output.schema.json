@@ -1,0 +1,90 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "market/block2_output.schema.json",
+  "title": "Market Block2 Output",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["block", "source_csv", "общий_вывод", "menu_by_place"],
+  "properties": {
+    "block": { "const": "block2_menu" },
+    "source_csv": { "type": "string", "minLength": 1 },
+    "общий_вывод": { "type": "string" },
+    "menu_by_place": {
+      "type": "object",
+      "minProperties": 1,
+      "additionalProperties": false,
+      "patternProperties": {
+        "^.+$": { "$ref": "#/$defs/menuEntry" }
+      }
+    }
+  },
+  "$defs": {
+    "item": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["category", "name", "price"],
+      "properties": {
+        "category": { "type": "string", "minLength": 1 },
+        "name": { "type": "string", "minLength": 1 },
+        "price": { "type": "number", "minimum": 0 }
+      }
+    },
+    "menuEntry": {
+      "oneOf": [
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["status", "items", "вывод"],
+          "properties": {
+            "status": { "const": "no_menu_links" },
+            "items": {
+              "type": "array",
+              "maxItems": 0
+            },
+            "вывод": { "type": "string" }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["status", "menu_urls", "items", "вывод"],
+          "properties": {
+            "status": { "const": "no_api_key" },
+            "menu_urls": {
+              "type": "array",
+              "items": { "type": "string", "minLength": 1 }
+            },
+            "items": {
+              "type": "array",
+              "maxItems": 0
+            },
+            "вывод": { "type": "string" }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["status", "menu_urls", "items_count", "has_kids_menu", "categories", "items", "вывод"],
+          "properties": {
+            "status": { "const": "parsed" },
+            "menu_urls": {
+              "type": "array",
+              "items": { "type": "string", "minLength": 1 }
+            },
+            "items_count": { "type": "integer", "minimum": 0 },
+            "has_kids_menu": { "type": "boolean" },
+            "categories": {
+              "type": "array",
+              "items": { "type": "string", "minLength": 1 }
+            },
+            "items": {
+              "type": "array",
+              "items": { "$ref": "#/$defs/item" }
+            },
+            "вывод": { "type": "string" }
+          }
+        }
+      ]
+    }
+  }
+}

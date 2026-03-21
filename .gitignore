@@ -1,0 +1,15 @@
+# Root + shared (see also MarketScope/.gitignore)
+.DS_Store
+Thumbs.db
+
+# Python (if used at repo root)
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+env/
+.env
+.env.local
+
+# Logs
+*.log

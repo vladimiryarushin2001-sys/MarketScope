@@ -1,0 +1,42 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "market/input_template.schema.json",
+  "title": "Market Input (template mode)",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "report_type",
+    "mode",
+    "top_n",
+    "source_csv",
+    "enrich_with_perplexity",
+    "perplexity_model",
+    "template"
+  ],
+  "properties": {
+    "report_type": { "const": "market" },
+    "mode": { "const": "template" },
+    "top_n": { "type": "integer", "minimum": 1 },
+    "source_csv": { "type": "string", "minLength": 1 },
+    "enrich_with_perplexity": { "type": "boolean" },
+    "perplexity_model": { "type": "string", "minLength": 1 },
+    "template": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["types", "cuisines", "price_min", "price_max", "особенности"],
+      "properties": {
+        "types": {
+          "type": "array",
+          "items": { "type": "string", "minLength": 1 }
+        },
+        "cuisines": {
+          "type": "array",
+          "items": { "type": "string", "minLength": 1 }
+        },
+        "price_min": { "type": "number", "minimum": 0 },
+        "price_max": { "type": "number", "minimum": 0 },
+        "особенности": { "type": "string" }
+      }
+    }
+  }
+}

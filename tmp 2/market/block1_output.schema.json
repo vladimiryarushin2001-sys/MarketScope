@@ -1,0 +1,71 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "market/block1_output.schema.json",
+  "title": "Market Block1 Output",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "block",
+    "report_type",
+    "mode",
+    "top_n",
+    "enrich_with_perplexity",
+    "perplexity_model",
+    "source_csv",
+    "query_context",
+    "общий_вывод",
+    "selected_places"
+  ],
+  "properties": {
+    "block": { "const": "block1_relevance" },
+    "report_type": { "const": "market" },
+    "mode": { "enum": ["template", "free_form"] },
+    "top_n": { "type": "integer", "minimum": 1 },
+    "enrich_with_perplexity": { "type": "boolean" },
+    "perplexity_model": { "type": "string", "minLength": 1 },
+    "source_csv": { "type": "string", "minLength": 1 },
+    "query_context": { "type": "string" },
+    "общий_вывод": { "type": "string" },
+    "selected_places": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/place" }
+    }
+  },
+  "$defs": {
+    "nullableString": { "type": ["string", "null"] },
+    "nullableNumber": { "type": ["number", "null"] },
+    "nullableBoolean": { "type": ["boolean", "null"] },
+    "place": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "название",
+        "адрес",
+        "тип_заведения",
+        "кухня",
+        "средний_чек",
+        "описание",
+        "ссылка",
+        "cosine_score",
+        "сайт",
+        "доставка",
+        "время_работы",
+        "вывод"
+      ],
+      "properties": {
+        "название": { "type": "string", "minLength": 1 },
+        "адрес": { "$ref": "#/$defs/nullableString" },
+        "тип_заведения": { "$ref": "#/$defs/nullableString" },
+        "кухня": { "$ref": "#/$defs/nullableString" },
+        "средний_чек": { "$ref": "#/$defs/nullableNumber" },
+        "описание": { "$ref": "#/$defs/nullableString" },
+        "ссылка": { "$ref": "#/$defs/nullableString" },
+        "cosine_score": { "$ref": "#/$defs/nullableNumber" },
+        "сайт": { "$ref": "#/$defs/nullableString" },
+        "доставка": { "$ref": "#/$defs/nullableBoolean" },
+        "время_работы": { "$ref": "#/$defs/nullableString" },
+        "вывод": { "type": "string" }
+      }
+    }
+  }
+}
