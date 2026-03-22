@@ -96,7 +96,7 @@ Edge Function `ingest` принимает payload вида `{ "blocks": { "block
 
 CLI (альтернатива): из каталога `mark/MarketScope` после `npm i -g vercel` — `vercel` / `vercel --prod` (переменные окружения задаются в дашборде или через `vercel env`).
 
-**Vercel Web Analytics:** в `vercel.json` SPA-rewrite **не должен** перехватывать пути `/_vercel/*` (иначе вместо `/_vercel/insights/script.js` отдаётся `index.html` и счётчик не работает). В репозитории используется шаблон `"/((?!_vercel/).*)"` → `index.html`.
+**Vercel Web Analytics:** (1) в `vercel.json` SPA-rewrite **не должен** перехватывать `/_vercel/*` — шаблон `"/((?!_vercel/).*)"` → `index.html`. (2) Скрипт подключается **в `index.html`** (`/_vercel/insights/script.js` + очередь `window.va`), чтобы запрос был виден в Network даже до React. На `localhost` этот URL даст 404 — нормально.
 
 ---
 
