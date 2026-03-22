@@ -96,6 +96,8 @@ Edge Function `ingest` принимает payload вида `{ "blocks": { "block
 
 CLI (альтернатива): из каталога `mark/MarketScope` после `npm i -g vercel` — `vercel` / `vercel --prod` (переменные окружения задаются в дашборде или через `vercel env`).
 
+**Vercel Web Analytics:** в `vercel.json` SPA-rewrite **не должен** перехватывать пути `/_vercel/*` (иначе вместо `/_vercel/insights/script.js` отдаётся `index.html` и счётчик не работает). В репозитории используется шаблон `"/((?!_vercel/).*)"` → `index.html`.
+
 ---
 
 # React + TypeScript + Vite
