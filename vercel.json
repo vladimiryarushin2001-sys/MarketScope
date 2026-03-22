@@ -1,0 +1,8 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "framework": "vite",
+  "installCommand": "cd mark/MarketScope && npm ci",
+  "buildCommand": "cd mark/MarketScope && npm run build",
+  "outputDirectory": "mark/MarketScope/dist",
+  "rewrites": [{ "source": "/(.*)", "destination": "/index.html" }]
+}

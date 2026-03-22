@@ -84,8 +84,8 @@ Edge Function `ingest` принимает payload вида `{ "blocks": { "block
 ### 5. Деплой на Vercel
 
 1. [Vercel](https://vercel.com) → **Add New → Project** → подключи GitHub-репозиторий.
-2. **Root Directory**: `mark/MarketScope` (обязательно — иначе Vercel не найдёт `package.json` фронта).
-3. Сборка подхватывается из **`vercel.json`**: `npm ci`, `npm run build`, статика из **`dist`**.
+2. **Root Directory**: либо оставь **корень репо** (в нём **`vercel.json`** — сборка `mark/MarketScope`, иначе Vercel уйдёт в Python из-за `pyproject.toml`), либо укажи **`mark/MarketScope`** — тогда используется локальный `vercel.json` этой папки.
+3. Команды сборки: `npm ci` и `npm run build` внутри `mark/MarketScope`, выход — **`dist`**.
 4. **Settings → Environment Variables** (Production и при желании Preview):
    - `VITE_SUPABASE_URL`
    - `VITE_SUPABASE_ANON_KEY`  
