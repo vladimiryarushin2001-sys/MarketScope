@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useState, useCallback, useEffect } from 'react';
 import type { Session, User } from '@supabase/supabase-js';
-import { supabase } from '../lib/supabase';
+import { supabase, isSupabaseConfigured } from '../lib/supabase';
 
 interface AuthContextValue {
   session: Session | null;
@@ -16,11 +16,7 @@ interface AuthContextValue {
 
 const AuthContext = createContext<AuthContextValue | null>(null);
 
-const hasSupabase = Boolean(
-  typeof import.meta !== 'undefined' &&
-    import.meta.env?.VITE_SUPABASE_URL &&
-    import.meta.env?.VITE_SUPABASE_ANON_KEY
-);
+const hasSupabase = isSupabaseConfigured;
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [session, setSession] = useState<Session | null>(null);
