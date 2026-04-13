@@ -58,6 +58,29 @@ const MenuTab: React.FC<MenuTabProps> = ({
     return Array.from(map.entries()).slice(0, 7).map(([category, values]) => ({ category, ...values }));
   })();
 
+  const categoryCountComparison = (() => {
+    const map = new Map<string, Record<string, number>>();
+    const totals = new Map<string, number>();
+
+    filteredMenus.forEach((menu) => {
+      const restName = restaurants.find((r) => r.id === menu.restaurant_id)?.name ?? '';
+      const items = itemsForMenus.filter((i) => i.menu_id === menu.id);
+      const byCat = new Map<string, number>();
+      items.forEach((i) => byCat.set(i.category, (byCat.get(i.category) ?? 0) + 1));
+      byCat.forEach((count, category) => {
+        const row = map.get(category) ?? {};
+        row[restName] = (row[restName] ?? 0) + count;
+        map.set(category, row);
+        totals.set(category, (totals.get(category) ?? 0) + count);
+      });
+    });
+
+    return Array.from(map.entries())
+      .sort((a, b) => (totals.get(b[0]) ?? 0) - (totals.get(a[0]) ?? 0))
+      .slice(0, 10)
+      .map(([category, values]) => ({ category, ...values }));
+  })();
+
   return (
     <div className="space-y-6">
       <div className="mb-4">
@@ -96,6 +119,27 @@ const MenuTab: React.FC<MenuTabProps> = ({
               <Legend />
               {filteredRestaurants.map((r, idx) => (
                 <Bar key={r.id} dataKey={r.name} fill={barColors[idx % barColors.length]} />
+              ))}
+            </BarChart>
+          </ResponsiveContainer>
+        </div>
+      )}
+
+      {categoryCountComparison.length > 0 && (
+        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+          <h3 className="text-lg font-semibold mb-4">Количество позиций в категориях (сравнение ресторанов)</h3>
+          <p className="text-sm text-gray-500 mb-4">
+            Показаны топ-10 категорий по суммарному количеству позиций.
+          </p>
+          <ResponsiveContainer width="100%" height={360}>
+            <BarChart data={categoryCountComparison}>
+              <CartesianGrid strokeDasharray="3 3" />
+              <XAxis dataKey="category" />
+              <YAxis allowDecimals={false} />
+              <Tooltip />
+              <Legend />
+              {filteredRestaurants.map((r, idx) => (
+                <Bar key={r.id} dataKey={r.name} name={r.name} fill={barColors[idx % barColors.length]} />
               ))}
             </BarChart>
           </ResponsiveContainer>
