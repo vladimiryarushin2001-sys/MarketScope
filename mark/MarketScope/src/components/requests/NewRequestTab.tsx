@@ -89,9 +89,6 @@ const NewRequestTab: React.FC<NewRequestTabProps> = ({ onCreated, onOpenSubscrip
     <div className="space-y-6">
       <div className="mb-4">
         <h2 className="text-xl font-semibold text-gray-900">Новый запрос</h2>
-        <p className="text-sm text-gray-500 mt-1">
-          Выберите тип запроса и заполните поля — они соответствуют схеме в DATA_FLOW.
-        </p>
         {onOpenSubscription && (
           <button
             type="button"
