@@ -67,7 +67,9 @@ const Navigation: React.FC<NavigationProps> = ({ activeTab, setActiveTab }) => {
                     role="menuitem"
                   >
                     <tab.icon className="w-4 h-4 flex-shrink-0" />
-                    <span className="truncate">{tab.label}</span>
+                    <span className="truncate notranslate" translate="no">
+                      {tab.label}
+                    </span>
                   </button>
                 ))}
               </div>
@@ -78,7 +80,7 @@ const Navigation: React.FC<NavigationProps> = ({ activeTab, setActiveTab }) => {
       : null;
 
   return (
-    <div className="bg-white border-b border-gray-200">
+    <div className="bg-white border-b border-gray-200 notranslate" translate="no">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Mobile: dropdown menu to avoid horizontal scroll */}
         <div className="py-3 sm:hidden">
@@ -94,7 +96,9 @@ const Navigation: React.FC<NavigationProps> = ({ activeTab, setActiveTab }) => {
                 <Menu className="w-4 h-4 text-gray-500 flex-shrink-0" />
                 <span className="flex items-center gap-2 min-w-0">
                   {active?.icon ? <active.icon className="w-4 h-4 text-blue-600 flex-shrink-0" /> : null}
-                  <span className="truncate">{active?.label ?? 'Раздел'}</span>
+              <span className="truncate notranslate" translate="no">
+                {active?.label ?? 'Раздел'}
+              </span>
                 </span>
               </span>
               <ChevronDown className={`w-4 h-4 text-gray-500 flex-shrink-0 transition-transform ${open ? 'rotate-180' : ''}`} />
@@ -123,7 +127,9 @@ const Navigation: React.FC<NavigationProps> = ({ activeTab, setActiveTab }) => {
               `}
             >
               <tab.icon className="w-4 h-4" />
-              <span>{tab.label}</span>
+              <span className="notranslate" translate="no">
+                {tab.label}
+              </span>
             </button>
           ))}
         </nav>
