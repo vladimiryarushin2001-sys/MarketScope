@@ -1,4 +1,5 @@
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
+import { createPortal } from 'react-dom';
 import { BarChart3, ChevronDown, CreditCard, FileText, Globe, Menu, MessageSquare, PlusCircle, ShoppingCart, Target, User } from 'lucide-react';
 
 interface NavigationProps {
@@ -30,6 +31,52 @@ const Navigation: React.FC<NavigationProps> = ({ activeTab, setActiveTab }) => {
     setOpen(false);
   };
 
+  useEffect(() => {
+    if (!open) return;
+    const prev = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    return () => {
+      document.body.style.overflow = prev;
+    };
+  }, [open]);
+
+  const mobileOverlay =
+    open && typeof document !== 'undefined'
+      ? createPortal(
+          <>
+            <button
+              type="button"
+              className="fixed inset-0 z-[9000] bg-black/25 backdrop-blur-[1px]"
+              aria-label="Close menu"
+              onClick={() => setOpen(false)}
+            />
+            <div
+              className="fixed left-4 right-4 top-24 z-[9100] overflow-hidden rounded-xl border border-gray-200 bg-white shadow-2xl"
+              role="menu"
+              aria-label="Навигация"
+            >
+              <div className="max-h-[70vh] overflow-auto py-1">
+                {tabs.map((tab) => (
+                  <button
+                    key={tab.id}
+                    type="button"
+                    onClick={() => onPick(tab.id)}
+                    className={`w-full flex items-center gap-2 px-3 py-2 text-left text-sm ${
+                      activeTab === tab.id ? 'bg-blue-50 text-blue-700' : 'text-gray-700 hover:bg-gray-50'
+                    }`}
+                    role="menuitem"
+                  >
+                    <tab.icon className="w-4 h-4 flex-shrink-0" />
+                    <span className="truncate">{tab.label}</span>
+                  </button>
+                ))}
+              </div>
+            </div>
+          </>,
+          document.body
+        )
+      : null;
+
   return (
     <div className="bg-white border-b border-gray-200">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -53,40 +100,7 @@ const Navigation: React.FC<NavigationProps> = ({ activeTab, setActiveTab }) => {
               <ChevronDown className={`w-4 h-4 text-gray-500 flex-shrink-0 transition-transform ${open ? 'rotate-180' : ''}`} />
             </button>
 
-            {open ? (
-              <>
-                {/* Backdrop to dim page + close on click */}
-                <button
-                  type="button"
-                  className="fixed inset-0 z-[9000] bg-black/25 backdrop-blur-[1px]"
-                  aria-label="Close menu"
-                  onClick={() => setOpen(false)}
-                />
-                {/* Fixed modal menu to avoid being clipped/covered by page content */}
-                <div
-                  className="fixed left-4 right-4 top-24 z-[9100] overflow-hidden rounded-xl border border-gray-200 bg-white shadow-2xl"
-                  role="menu"
-                  aria-label="Навигация"
-                >
-                  <div className="max-h-[70vh] overflow-auto py-1">
-                    {tabs.map((tab) => (
-                      <button
-                        key={tab.id}
-                        type="button"
-                        onClick={() => onPick(tab.id)}
-                        className={`w-full flex items-center gap-2 px-3 py-2 text-left text-sm ${
-                          activeTab === tab.id ? 'bg-blue-50 text-blue-700' : 'text-gray-700 hover:bg-gray-50'
-                        }`}
-                        role="menuitem"
-                      >
-                        <tab.icon className="w-4 h-4 flex-shrink-0" />
-                        <span className="truncate">{tab.label}</span>
-                      </button>
-                    ))}
-                  </div>
-                </div>
-              </>
-            ) : null}
+            {mobileOverlay}
           </div>
         </div>
 
