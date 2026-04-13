@@ -10,9 +10,14 @@ const PreviewPage: React.FC = () => {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [acceptedPrivacy, setAcceptedPrivacy] = useState(false);
+  const [acceptedTerms, setAcceptedTerms] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
   const [loading, setLoading] = useState(false);
+
+  const privacyHref = encodeURI('/docs/Политика Конфиденциальности.docx');
+  const termsHref = encodeURI('/docs/Пользовательское_Соглашение_MarketScope.docx');
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -29,6 +34,10 @@ const PreviewPage: React.FC = () => {
     setLoading(true);
     try {
       if (mode === 'register') {
+        if (!acceptedPrivacy || !acceptedTerms) {
+          setError('Перед регистрацией подтвердите, что вы ознакомились с документами.');
+          return;
+        }
         const { error: err } = await signUpOrSignIn(email.trim(), password, name.trim() || undefined);
         if (err) {
           setError(err.message);
@@ -187,9 +196,41 @@ const PreviewPage: React.FC = () => {
                   placeholder="••••••••"
                 />
               </div>
+              {mode === 'register' && (
+                <div className="space-y-2 pt-1">
+                  <label className="flex items-start gap-2 text-sm text-slate-700">
+                    <input
+                      type="checkbox"
+                      checked={acceptedPrivacy}
+                      onChange={(e) => setAcceptedPrivacy(e.target.checked)}
+                      className="mt-1 h-4 w-4 rounded border-slate-300 text-blue-600 focus:ring-blue-500"
+                    />
+                    <span>
+                      Я ознакомился(ась) с{' '}
+                      <a href={privacyHref} target="_blank" rel="noreferrer" className="text-blue-600 hover:underline font-medium">
+                        Политикой конфиденциальности
+                      </a>
+                    </span>
+                  </label>
+                  <label className="flex items-start gap-2 text-sm text-slate-700">
+                    <input
+                      type="checkbox"
+                      checked={acceptedTerms}
+                      onChange={(e) => setAcceptedTerms(e.target.checked)}
+                      className="mt-1 h-4 w-4 rounded border-slate-300 text-blue-600 focus:ring-blue-500"
+                    />
+                    <span>
+                      Я ознакомился(ась) с{' '}
+                      <a href={termsHref} target="_blank" rel="noreferrer" className="text-blue-600 hover:underline font-medium">
+                        Пользовательским соглашением
+                      </a>
+                    </span>
+                  </label>
+                </div>
+              )}
               <button
                 type="submit"
-                disabled={loading}
+                disabled={loading || (mode === 'register' && (!acceptedPrivacy || !acceptedTerms))}
                 className="w-full flex items-center justify-center gap-2 py-3 px-4 bg-blue-600 hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed text-white font-medium rounded-lg transition-colors"
               >
                 {loading ? 'Загрузка...' : mode === 'register' ? 'Зарегистрироваться' : 'Войти'}
@@ -201,7 +242,13 @@ const PreviewPage: React.FC = () => {
                     Уже есть аккаунт?{' '}
                     <button
                       type="button"
-                      onClick={() => { setMode('login'); setError(''); setSuccess(''); }}
+                      onClick={() => {
+                        setMode('login');
+                        setAcceptedPrivacy(false);
+                        setAcceptedTerms(false);
+                        setError('');
+                        setSuccess('');
+                      }}
                       className="text-blue-600 hover:underline font-medium"
                     >
                       Войти
@@ -212,7 +259,13 @@ const PreviewPage: React.FC = () => {
                     Нет аккаунта?{' '}
                     <button
                       type="button"
-                      onClick={() => { setMode('register'); setError(''); setSuccess(''); }}
+                      onClick={() => {
+                        setMode('register');
+                        setAcceptedPrivacy(false);
+                        setAcceptedTerms(false);
+                        setError('');
+                        setSuccess('');
+                      }}
                       className="text-blue-600 hover:underline font-medium"
                     >
                       Зарегистрироваться
@@ -222,12 +275,6 @@ const PreviewPage: React.FC = () => {
               </p>
             </form>
           </div>
-        </section>
-
-        <section className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pb-20 text-center">
-          <p className="text-slate-500 text-sm">
-            В Supabase Dashboard можно отключить подтверждение email (Authentication → Providers → Email: Confirm email), чтобы входить сразу после регистрации.
-          </p>
         </section>
       </main>
     </div>
