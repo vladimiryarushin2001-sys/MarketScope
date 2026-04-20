@@ -1,0 +1,69 @@
+services:
+  - type: redis
+    name: marketscope-ms-v2-redis
+    plan: starter
+    maxmemoryPolicy: noeviction
+
+  - type: web
+    name: marketscope-ms-v2-api
+    plan: standard
+    runtime: docker
+    rootDir: backend/ms-v2
+    dockerfilePath: Dockerfile
+    healthCheckPath: /health
+    envVars:
+      - key: REDIS_URL
+        fromService:
+          type: redis
+          name: marketscope-ms-v2-redis
+          property: connectionString
+      - key: PROJECT_ROOT
+        value: /app
+      - key: SOURCE_CSV
+        value: /app/final_blyat_v3.csv
+      - key: CELERY_CONCURRENCY
+        value: "2"
+      # Provide as a secret in Render UI (public or signed URL to final_blyat_v3.csv)
+      - key: SOURCE_CSV_URL
+        sync: false
+      # LLM keys (set as secrets in Render UI)
+      - key: PPLX_API_KEY
+        sync: false
+      - key: OPENROUTER_API_KEY
+        sync: false
+      - key: GIGACHAT_CREDENTIALS
+        sync: false
+    startCommand: bash service/start_api.sh
+
+  - type: worker
+    name: marketscope-ms-v2-worker
+    plan: standard
+    runtime: docker
+    rootDir: backend/ms-v2
+    dockerfilePath: Dockerfile
+    envVars:
+      - key: REDIS_URL
+        fromService:
+          type: redis
+          name: marketscope-ms-v2-redis
+          property: connectionString
+      - key: PROJECT_ROOT
+        value: /app
+      - key: SOURCE_CSV
+        value: /app/final_blyat_v3.csv
+      - key: CELERY_CONCURRENCY
+        value: "2"
+      - key: SOURCE_CSV_URL
+        sync: false
+      - key: PPLX_API_KEY
+        sync: false
+      - key: OPENROUTER_API_KEY
+        sync: false
+      - key: GIGACHAT_CREDENTIALS
+        sync: false
+    disk:
+      name: ms-v2-jobs
+      mountPath: /app/jobs
+      sizeGB: 10
+    startCommand: bash service/start_worker.sh
+

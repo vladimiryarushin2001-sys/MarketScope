@@ -134,5 +134,34 @@ docker compose -f docker-compose.ms-v2.yml up --build -d
 - `GET http://localhost:8000/health`
 - `POST http://localhost:8000/analyze` (см. примеры в `backend/ms-v2/README.md`)
 
+---
+
+## Прод (Render): MarketScope API (v2) + Redis + Worker
+
+В репозитории есть **Blueprint** `render.yaml`, который поднимает:
+- **Redis** (broker + backend для Celery)
+- **Web service** `ms-v2-api` (FastAPI: `/analyze`, `/jobs/{id}`)
+- **Worker** `ms-v2-worker` (Celery)
+
+### Что нужно в Render
+
+1. Создай новый Blueprint на Render из этого репозитория (он подхватит `render.yaml`).
+2. В переменных окружения для `ms-v2-api` и `ms-v2-worker` заполни секреты:
+   - `PPLX_API_KEY` (Perplexity)
+   - `OPENROUTER_API_KEY` (для парсинга меню)
+   - `SOURCE_CSV_URL` — ссылка (public или signed URL) на файл `final_blyat_v3.csv`
+
+CSV в проде скачивается при старте контейнера скриптом `backend/ms-v2/service/ensure_csv.sh`.
+
+### Что нужно в Supabase (чтобы сайт мог вызывать микросервис)
+
+В Supabase Edge Functions задай переменную:
+- `MS_V2_URL` = URL web-сервиса `ms-v2-api` на Render (без завершающего `/`)
+
+После этого сайт будет:
+1) запускать `POST /analyze` через `ms-v2-start`  
+2) поллить `GET /jobs/{id}` через `ms-v2-poll`  
+3) при готовности сохранять outputs в БД через `ingest` и показывать пользователю.
+
 
 
