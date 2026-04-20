@@ -55,8 +55,9 @@ Deno.serve(async (req) => {
 
     const authHeader = req.headers.get("Authorization") ?? "";
     const bearer = authHeader.toLowerCase().startsWith("bearer ") ? authHeader.slice(7).trim() : "";
-    if (!bearer) return json(401, { error: "Missing Authorization Bearer token" });
-    const u = await supabase.auth.getUser(bearer);
+    const userJwt = bearer || (req.headers.get("X-User-JWT") ?? "");
+    if (!userJwt) return json(401, { error: "Missing user JWT (Authorization Bearer or X-User-JWT)" });
+    const u = await supabase.auth.getUser(userJwt);
     if (u.error || !u.data.user) return json(401, { error: "Invalid user token" });
     const userId = u.data.user.id;
 

@@ -33,6 +33,7 @@ import { useDashboardData } from './hooks/useDashboardData';
 import { useClientRequests } from './hooks/useClientRequests';
 import { getRestaurantName, getFilteredRestaurantData, getMetricsForRestaurant } from './utils/dataFilters';
 import { useSubscriptionStatus } from './hooks/useSubscriptionStatus';
+import { invokeEdgeFunction } from './lib/edgeFunctions';
 
 function AppContent() {
   const { isAuthenticated, authLoading } = useAuth();
@@ -239,7 +240,7 @@ const CompetitorAnalysisDashboard: React.FC = () => {
     let cancelled = false;
     const tick = async () => {
       try {
-        await supabase.functions.invoke('ms-v2-poll', { body: { run_id: activeRun.id } });
+        await invokeEdgeFunction('ms-v2-poll', { run_id: activeRun.id });
         if (!cancelled) reloadRequests();
       } catch {
         // ignore transient errors; we'll try again

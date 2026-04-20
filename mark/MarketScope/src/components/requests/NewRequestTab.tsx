@@ -1,6 +1,7 @@
 import React, { useMemo, useState } from 'react';
 import { supabase } from '../../lib/supabase';
 import { useAuth } from '../../contexts/AuthContext';
+import { invokeEdgeFunction } from '../../lib/edgeFunctions';
 import type { ClientRequest } from '../../types';
 
 type RequestMode = 'market_overview' | 'competitive_analysis';
@@ -77,10 +78,9 @@ const NewRequestTab: React.FC<NewRequestTabProps> = ({ onCreated, onOpenSubscrip
       const { data, error: eIns } = await supabase.from('client_requests').insert(payload).select('*').single();
       if (eIns) throw eIns;
       // Start async ms-v2 pipeline right after request creation
-      const { data: startData, error: startErr } = await supabase.functions.invoke('ms-v2-start', {
-        body: { request_id: (data as ClientRequest).id },
+      const startData = await invokeEdgeFunction<{ ok?: boolean; runId?: number }>('ms-v2-start', {
+        request_id: (data as ClientRequest).id,
       });
-      if (startErr) throw startErr;
 
       setSuccess(
         startData?.runId
