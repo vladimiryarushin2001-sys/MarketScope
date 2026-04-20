@@ -9,9 +9,10 @@ type RequestMode = 'market_overview' | 'competitive_analysis';
 interface NewRequestTabProps {
   onCreated?: (request: ClientRequest) => void;
   onOpenSubscription?: () => void;
+  subscriptionActive?: boolean;
 }
 
-const NewRequestTab: React.FC<NewRequestTabProps> = ({ onCreated, onOpenSubscription }) => {
+const NewRequestTab: React.FC<NewRequestTabProps> = ({ onCreated, onOpenSubscription, subscriptionActive }) => {
   const { user } = useAuth();
   const [mode, setMode] = useState<RequestMode>('market_overview');
   const [queryText, setQueryText] = useState('');
@@ -52,15 +53,20 @@ const NewRequestTab: React.FC<NewRequestTabProps> = ({ onCreated, onOpenSubscrip
 
   const canSubmit = useMemo(() => {
     if (!user) return false;
+    if (!subscriptionActive) return false;
     if (!queryText.trim()) return false;
     if (mode === 'market_overview') return true;
     return Boolean(myName.trim() || myAddress.trim() || mySite.trim() || myMenuUrl.trim());
-  }, [user, queryText, mode, myName, myAddress, mySite, myMenuUrl]);
+  }, [user, subscriptionActive, queryText, mode, myName, myAddress, mySite, myMenuUrl]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!user) {
       setError('Нужно войти в аккаунт');
+      return;
+    }
+    if (!subscriptionActive) {
+      setError('Для запуска анализа нужна активная подписка.');
       return;
     }
     if (!canSubmit) return;
@@ -114,6 +120,20 @@ const NewRequestTab: React.FC<NewRequestTabProps> = ({ onCreated, onOpenSubscrip
         <form onSubmit={handleSubmit} className="space-y-5">
           {error && <div className="rounded-lg bg-rose-50 border border-rose-200 p-3 text-rose-800 text-sm">{error}</div>}
           {success && <div className="rounded-lg bg-emerald-50 border border-emerald-200 p-3 text-emerald-800 text-sm">{success}</div>}
+          {!subscriptionActive && (
+            <div className="rounded-lg bg-amber-50 border border-amber-200 p-3 text-amber-900 text-sm">
+              Для запуска анализа нужна активная подписка.
+              {onOpenSubscription && (
+                <button
+                  type="button"
+                  onClick={onOpenSubscription}
+                  className="ml-2 underline font-medium hover:text-amber-950"
+                >
+                  Перейти к тарифам
+                </button>
+              )}
+            </div>
+          )}
 
           <div className="flex flex-col md:flex-row md:items-center gap-3">
             <span className="text-sm text-gray-600">Тип отчёта</span>

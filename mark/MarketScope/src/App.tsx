@@ -147,6 +147,7 @@ const CompetitorAnalysisDashboard: React.FC = () => {
               reloadRequests();
             }}
             onOpenSubscription={() => setActiveTab('subscription')}
+            subscriptionActive={subscriptionActive}
           />
         );
       case 'subscription':

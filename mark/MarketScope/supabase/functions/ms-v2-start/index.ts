@@ -39,6 +39,28 @@ function toNumberOrNull(v: unknown): number | null {
   return Number.isFinite(n) ? n : null;
 }
 
+async function hasActiveSubscription(supabase: any, userId: string): Promise<boolean> {
+  const { data, error } = await supabase
+    .from("subscriptions")
+    .select("is_active,is_lifetime,expires_at")
+    .eq("user_id", userId)
+    .order("created_at", { ascending: false })
+    .limit(1)
+    .maybeSingle();
+  if (error) throw error;
+  if (!data) return false;
+  if (!data.is_active) return false;
+  if (data.is_lifetime) return true;
+  if (!data.expires_at) return true;
+  // expires_at is a date; treat as inclusive for the whole day
+  try {
+    const exp = new Date(`${String(data.expires_at)}T23:59:59Z`).getTime();
+    return exp >= Date.now();
+  } catch {
+    return false;
+  }
+}
+
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response("ok", { headers: corsHeaders });
 
@@ -61,6 +83,10 @@ Deno.serve(async (req) => {
     const u = await supabase.auth.getUser(userJwt);
     if (u.error || !u.data.user) return json(401, { error: "Invalid user token" });
     const userId = u.data.user.id;
+
+    // Enforce subscription before starting expensive pipeline
+    const allowed = await hasActiveSubscription(supabase, userId);
+    if (!allowed) return json(402, { error: "Subscription required" });
 
     const body = await req.json().catch(() => ({}));
     const requestId = Number(body.request_id);
