@@ -53,7 +53,12 @@ Deno.serve(async (req) => {
   try {
     const supabaseUrl = Deno.env.get("SUPABASE_URL") ?? "";
     const serviceRoleKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "";
-    /** Supabase /functions/v1: apikey и Authorization с одной и той же service role — иначе шлюз отдаёт 401. */
+    /**
+     * Вызов другой Edge-функции (/functions/v1/ingest): шлюз ожидает JWT в Bearer (eyJ...).
+     * Авто-SUPABASE_SERVICE_ROLE_KEY может быть в формате sb_secret_* — тогда 401 INVALID_JWT_FORMAT.
+     * Задай в Edge Secrets секрет EDGE_SERVICE_ROLE_JWT = legacy service_role JWT (вкладка Legacy API keys).
+     */
+    const ingestGatewayJwt = (Deno.env.get("EDGE_SERVICE_ROLE_JWT") ?? "").trim() || serviceRoleKey;
     const msV2Url = (Deno.env.get("MS_V2_URL") ?? "").replace(/\/+$/, "");
     if (!supabaseUrl || !serviceRoleKey) return json(500, { error: "Missing SUPABASE_URL or SUPABASE_SERVICE_ROLE_KEY" });
     if (!msV2Url) return json(500, { error: "Missing MS_V2_URL env" });
@@ -170,8 +175,8 @@ Deno.serve(async (req) => {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          apikey: serviceRoleKey,
-          Authorization: `Bearer ${serviceRoleKey}`,
+          apikey: ingestGatewayJwt,
+          Authorization: `Bearer ${ingestGatewayJwt}`,
           "X-Internal-User-Id": userId,
         },
         body: JSON.stringify({
