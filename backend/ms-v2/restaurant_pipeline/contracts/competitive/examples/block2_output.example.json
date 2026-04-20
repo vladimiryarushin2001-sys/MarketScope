@@ -1,0 +1,43 @@
+{
+  "block": "block2_menu",
+  "source_csv": "/Users/danilapertsev/Desktop/ms_v2/final_blyat_v3.csv",
+  "вывод_по_опорному": "Ruski предлагает компактное меню (3 позиции) в трёх категориях без детского меню. Birds не предоставил данные — важно доработать парсинг для полного сравнения структуры меню и ценовой политики.",
+  "menu_by_place": {
+    "Ruski": {
+      "status": "parsed",
+      "menu_urls": [
+        "https://ruski.com/menu"
+      ],
+      "items_count": 3,
+      "has_kids_menu": false,
+      "categories": ["ЗАКУСКИ", "ГОРЯЧЕЕ", "ДЕСЕРТЫ"],
+      "items": [
+        {
+          "category": "ЗАКУСКИ",
+          "name": "Оливье с раком",
+          "price": 990
+        },
+        {
+          "category": "ГОРЯЧЕЕ",
+          "name": "Пожарская котлета",
+          "price": 1350
+        },
+        {
+          "category": "ДЕСЕРТЫ",
+          "name": "Наполеон",
+          "price": 650
+        }
+      ],
+      "вывод": "Структурированное меню с закусками, горячим и десертами. Нет детского меню.",
+      "is_reference_place": true
+    },
+    "Birds": {
+      "status": "no_api_key",
+      "menu_urls": [
+        "https://birds.moscow/menu"
+      ],
+      "items": [],
+      "вывод": "Меню не удалось получить (нет API-ключа). Сравнение ограничено."
+    }
+  }
+}

@@ -1,0 +1,8 @@
+{
+  "mode": "free_form",
+  "top_n": 10,
+  "enrich_with_perplexity": true,
+  "perplexity_model": "sonar",
+  "source_csv": "/Users/danilapertsev/Desktop/ms_v2/final_blyat_v3.csv",
+  "free_form_text": "Ruski"
+}

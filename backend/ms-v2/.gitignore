@@ -1,0 +1,58 @@
+# Окружение (ключи не коммитить)
+.env
+
+# Кэш весов энкодера (sentence-transformers)
+encoder_cache/
+
+# Python
+__pycache__/
+*.py[cod]
+venv/
+.venv/
+
+# Jupyter
+.ipynb_checkpoints/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+.DS_Store
+
+# Промежуточные данные pipeline (генерируются при запуске)
+restaurant_pipeline/data_exchange/block*_output*.json
+restaurant_pipeline/data_exchange/block*_output*.md
+restaurant_pipeline/data_exchange/block3_reviews_*.json
+restaurant_pipeline/data_exchange/block3_summary_*.json
+restaurant_pipeline/data_exchange/_tmp_*
+restaurant_pipeline/data_exchange/pipeline_warnings.json
+
+# Сырые данные парсинга (тяжёлые, не исходный код)
+restoclub_data/
+
+# CSV-данные (тяжёлые, обновляются отдельно)
+*.csv
+
+# Docker
+jobs_data/
+
+# Временные картинки меню (генерируются pipeline)
+restaurant_pipeline/data_exchange/tmp_menu_images/
+
+# Временные/тестовые файлы
+tmp_*
+*.bak
+yandex_reviews_results*.json
+
+# Jupyter notebooks (черновики, не исходный код)
+*.ipynb
+
+# Legacy/дубликаты скриптов и утилиты
+parse_yandex_reviews copy.py
+parse_yandex_reviews_v2.py
+dashboard.py
+download_encoder.py
+fill_missing_checks.py
+set_premium_avg_check.py
+test_competitive_blocks.py
+test_sentiment.py

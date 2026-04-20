@@ -1,0 +1,25 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "market/input_free_form.schema.json",
+  "title": "Market Input (free_form mode)",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "report_type",
+    "mode",
+    "top_n",
+    "source_csv",
+    "enrich_with_perplexity",
+    "perplexity_model",
+    "free_form_text"
+  ],
+  "properties": {
+    "report_type": { "const": "market" },
+    "mode": { "const": "free_form" },
+    "top_n": { "type": "integer", "minimum": 1 },
+    "source_csv": { "type": "string", "minLength": 1 },
+    "enrich_with_perplexity": { "type": "boolean" },
+    "perplexity_model": { "type": "string", "minLength": 1 },
+    "free_form_text": { "type": "string", "minLength": 1 }
+  }
+}

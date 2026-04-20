@@ -1,0 +1,7 @@
+{
+  "mode": "free_form",
+  "free_form_text": "хачапури и вино",
+  "top_n": 10,
+  "enrich_with_perplexity": true,
+  "perplexity_model": "sonar"
+}

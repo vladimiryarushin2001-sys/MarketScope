@@ -1,0 +1,25 @@
+{
+  "block": "block5_tech",
+  "вывод_по_опорному": "Ruski — корректный сайт с HTTPS, viewport, мета-описанием. Загрузка 1.5–2.4 с. Birds недоступен (SSL-ошибка). Рекомендация: следить за доступностью и скоростью, Birds не подходит для технического сравнения.",
+  "tech_by_place": {
+    "Ruski": {
+      "url": "https://ruski.com",
+      "status_code": 200,
+      "load_time_sec": 1.52,
+      "mobile_load_time_sec": 2.41,
+      "page_size_kb": 1040.2,
+      "title": "Ruski Restaurant",
+      "meta_description": "Панорамный ресторан русской кухни в Москва-Сити.",
+      "https": true,
+      "has_viewport": true,
+      "error": null,
+      "вывод": "Сайт в порядке: HTTPS, viewport, мета-данные. Умеренная скорость загрузки.",
+      "is_reference_place": true
+    },
+    "Birds": {
+      "url": "https://birds.moscow",
+      "error": "ssl handshake error",
+      "вывод": "Сайт недоступен из-за SSL-ошибки. Требуется проверка конфигурации."
+    }
+  }
+}

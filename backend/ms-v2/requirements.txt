@@ -1,0 +1,32 @@
+# Взаимодействие с LLM и структура данных
+langchain-community
+langchain-perplexity
+langchain-core
+pydantic
+
+# Веб-скрапинг (Вторая часть задачи)
+playwright
+beautifulsoup4
+
+# Парсинг отзывов Яндекс Карт
+pandas
+
+# Поиск заведений (векторизация описаний)
+sentence-transformers
+
+# Тональность отзывов (block3)
+transformers
+--extra-index-url https://download.pytorch.org/whl/cpu
+torch
+# Если kernel падает из‑за NumPy/PyTorch: pip install "numpy<2" или обновите PyTorch до >= 2.4
+undetected-chromedriver
+selenium
+yandex-reviews-parser
+
+# Парсинг меню (Block 2)
+langchain-openai
+PyMuPDF
+Pillow
+
+# Утилиты
+python-dotenv  # Чтобы удобно грузить ключи из файла .env

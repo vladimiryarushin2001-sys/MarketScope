@@ -1,0 +1,21 @@
+{
+  "block": "block6_aggregator",
+  "mode": "competitive",
+  "input_sources": {
+    "block1": "/Users/danilapertsev/Desktop/ms_v2/output/competitive/block1_output.json",
+    "block2": "/Users/danilapertsev/Desktop/ms_v2/output/competitive/block2_output.json",
+    "block3": "/Users/danilapertsev/Desktop/ms_v2/output/competitive/block3_output.json",
+    "block4": "/Users/danilapertsev/Desktop/ms_v2/output/competitive/block4_output.json",
+    "block5": "/Users/danilapertsev/Desktop/ms_v2/output/competitive/block5_output.json"
+  },
+  "report_md": "# Конкурентный отчет\n\n## Позиционирование\nRuski удерживает сильную видовую премиальную позицию.",
+  "sections": {
+    "позиционирование": "Ruski выигрывает за счет русской кухни и панорамы, Birds сильнее в вечернем сценарии.",
+    "меню": "У Ruski меню более цельное и считывается как гастрономическое, у Birds акцент смещен в бар и event-составляющую.",
+    "отзывы": "У reference-заведения сильнее кухня и вид, у конкурента выше доля упоминаний атмосферы и шоу.",
+    "маркетинг": "Оба игрока присутствуют в соцсетях, но у Ruski лучше упакована программа лояльности.",
+    "техническая часть": "У Ruski сайт стабильнее, у конкурента заметны технические проблемы доступа.",
+    "бизнес-рекомендации": "Стоит усиливать скорость сервиса и яснее выносить фирменные блюда в коммуникацию.",
+    "справочная информация": "Раздел собран на основе выходов блоков 1-5."
+  }
+}

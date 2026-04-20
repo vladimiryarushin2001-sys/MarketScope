@@ -1,0 +1,138 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "competitive/block1_output.schema.json",
+  "title": "Competitive Block1 Output",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "block",
+    "report_type",
+    "mode",
+    "top_n",
+    "enrich_with_perplexity",
+    "perplexity_model",
+    "source_csv",
+    "reference_place",
+    "вывод_по_опорному",
+    "selected_places"
+  ],
+  "properties": {
+    "block": { "const": "block1_relevance" },
+    "report_type": { "const": "competitive" },
+    "mode": { "const": "competitive" },
+    "top_n": { "type": "integer", "minimum": 1 },
+    "enrich_with_perplexity": { "type": "boolean" },
+    "perplexity_model": { "type": "string", "minLength": 1 },
+    "source_csv": { "type": "string", "minLength": 1 },
+    "reference_place": { "$ref": "#/$defs/referenceInput" },
+    "вывод_по_опорному": { "type": "string" },
+    "selected_places": {
+      "type": "array",
+      "items": {
+        "oneOf": [
+          { "$ref": "#/$defs/regularPlace" },
+          { "$ref": "#/$defs/referencePlace" }
+        ]
+      }
+    }
+  },
+  "$defs": {
+    "nullableString": { "type": ["string", "null"] },
+    "nullableNumber": { "type": ["number", "null"] },
+    "nullableBoolean": { "type": ["boolean", "null"] },
+    "referenceInput": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name", "address", "yandex_maps_link", "website", "menu_files", "menu_file", "menu_url"],
+      "properties": {
+        "name": { "type": "string", "minLength": 1 },
+        "address": { "type": "string", "minLength": 1 },
+        "yandex_maps_link": { "type": "string", "minLength": 1 },
+        "website": { "type": ["string", "null"] },
+        "menu_files": {
+          "type": ["array", "null"],
+          "items": { "type": "string", "minLength": 1 }
+        },
+        "menu_file": { "type": ["string", "null"] },
+        "menu_url": { "type": ["string", "null"] }
+      }
+    },
+    "regularPlace": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "название",
+        "адрес",
+        "тип_заведения",
+        "кухня",
+        "средний_чек",
+        "описание",
+        "ссылка",
+        "cosine_score",
+        "сайт",
+        "доставка",
+        "время_работы",
+        "вывод"
+      ],
+      "properties": {
+        "название": { "type": "string", "minLength": 1 },
+        "адрес": { "$ref": "#/$defs/nullableString" },
+        "тип_заведения": { "$ref": "#/$defs/nullableString" },
+        "кухня": { "$ref": "#/$defs/nullableString" },
+        "средний_чек": { "$ref": "#/$defs/nullableNumber" },
+        "описание": { "$ref": "#/$defs/nullableString" },
+        "ссылка": { "$ref": "#/$defs/nullableString" },
+        "cosine_score": { "$ref": "#/$defs/nullableNumber" },
+        "сайт": { "$ref": "#/$defs/nullableString" },
+        "доставка": { "$ref": "#/$defs/nullableBoolean" },
+        "время_работы": { "$ref": "#/$defs/nullableString" },
+        "вывод": { "type": "string" }
+      }
+    },
+    "referencePlace": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "название",
+        "адрес",
+        "тип_заведения",
+        "кухня",
+        "средний_чек",
+        "описание",
+        "ссылка",
+        "cosine_score",
+        "сайт",
+        "доставка",
+        "время_работы",
+        "is_reference_place",
+        "yandex_maps_link",
+        "menu_files",
+        "menu_file",
+        "menu_url",
+        "вывод"
+      ],
+      "properties": {
+        "название": { "type": "string", "minLength": 1 },
+        "адрес": { "$ref": "#/$defs/nullableString" },
+        "тип_заведения": { "$ref": "#/$defs/nullableString" },
+        "кухня": { "$ref": "#/$defs/nullableString" },
+        "средний_чек": { "$ref": "#/$defs/nullableNumber" },
+        "описание": { "$ref": "#/$defs/nullableString" },
+        "ссылка": { "$ref": "#/$defs/nullableString" },
+        "cosine_score": { "type": "null" },
+        "сайт": { "$ref": "#/$defs/nullableString" },
+        "доставка": { "$ref": "#/$defs/nullableBoolean" },
+        "время_работы": { "$ref": "#/$defs/nullableString" },
+        "is_reference_place": { "const": true },
+        "yandex_maps_link": { "$ref": "#/$defs/nullableString" },
+        "menu_files": {
+          "type": ["array", "null"],
+          "items": { "type": "string", "minLength": 1 }
+        },
+        "menu_file": { "$ref": "#/$defs/nullableString" },
+        "menu_url": { "$ref": "#/$defs/nullableString" },
+        "вывод": { "type": "string" }
+      }
+    }
+  }
+}

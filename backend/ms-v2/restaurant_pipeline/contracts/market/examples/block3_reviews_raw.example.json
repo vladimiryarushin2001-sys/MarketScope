@@ -1,0 +1,32 @@
+[
+  {
+    "place_name": "Gussi",
+    "place_address": "ул. Никольская, 12",
+    "org_id": "1234567890",
+    "error": null,
+    "company_info": {
+      "name": "Gussi",
+      "rating": 4.4,
+      "count_rating": 1200,
+      "stars": 0
+    },
+    "reviews": [
+      {
+        "name": "Анна П.",
+        "icon_href": "https://avatars.example.com/anna.jpg",
+        "date": 1761410913.432,
+        "text": "Очень понравился интерьер и блюда из птицы. Паштет из гуся был отличным, подача эффектная.",
+        "stars": 5,
+        "answer": ""
+      },
+      {
+        "name": "Игорь К.",
+        "icon_href": "https://avatars.example.com/igor.jpg",
+        "date": 1761411913.432,
+        "text": "Ждали горячее почти час, но борщ и коктейли были на хорошем уровне.",
+        "stars": 4,
+        "answer": "Спасибо за отзыв!"
+      }
+    ]
+  }
+]

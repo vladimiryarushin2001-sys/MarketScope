@@ -1,0 +1,89 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "market/block3_output.schema.json",
+  "title": "Market Block3 Output",
+  "oneOf": [
+    { "$ref": "#/$defs/perplexityRoot" },
+    { "$ref": "#/$defs/simpleRoot" }
+  ],
+  "$defs": {
+    "perplexitySummary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["заведение", "количество_отзывов", "общая_информация", "положительное", "отрицательное", "вывод"],
+      "properties": {
+        "заведение": { "type": "string", "minLength": 1 },
+        "количество_отзывов": { "type": "integer", "minimum": 0 },
+        "общая_информация": { "type": "string" },
+        "положительное": { "type": "array", "items": { "type": "string" } },
+        "отрицательное": { "type": "array", "items": { "type": "string" } },
+        "вывод": { "type": "string" }
+      }
+    },
+    "simpleSummary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["заведение", "количество_отзывов", "общая_информация", "положительное", "отрицательное", "вывод"],
+      "properties": {
+        "заведение": { "type": "string", "minLength": 1 },
+        "количество_отзывов": { "type": "integer", "minimum": 0 },
+        "общая_информация": { "type": "string" },
+        "положительное": { "type": "string" },
+        "отрицательное": { "type": "string" },
+        "вывод": { "type": "string" }
+      }
+    },
+    "baseRoot": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "block",
+        "summary_mode",
+        "source_csv",
+        "parser_input_csv",
+        "source_reviews_json",
+        "matched_places_count",
+        "общий_вывод",
+        "summaries"
+      ],
+      "properties": {
+        "block": { "const": "block3_reviews" },
+        "summary_mode": { "enum": ["perplexity", "simple"] },
+        "source_csv": { "type": "string", "minLength": 1 },
+        "parser_input_csv": { "type": "string", "minLength": 1 },
+        "source_reviews_json": { "type": "string", "minLength": 1 },
+        "matched_places_count": { "type": "integer", "minimum": 0 },
+        "общий_вывод": { "type": "string" },
+        "summaries": { "type": "array" }
+      }
+    },
+    "perplexityRoot": {
+      "allOf": [
+        { "$ref": "#/$defs/baseRoot" },
+        {
+          "properties": {
+            "summary_mode": { "const": "perplexity" },
+            "summaries": {
+              "type": "array",
+              "items": { "$ref": "#/$defs/perplexitySummary" }
+            }
+          }
+        }
+      ]
+    },
+    "simpleRoot": {
+      "allOf": [
+        { "$ref": "#/$defs/baseRoot" },
+        {
+          "properties": {
+            "summary_mode": { "const": "simple" },
+            "summaries": {
+              "type": "array",
+              "items": { "$ref": "#/$defs/simpleSummary" }
+            }
+          }
+        }
+      ]
+    }
+  }
+}

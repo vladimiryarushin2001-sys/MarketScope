@@ -1,0 +1,48 @@
+{
+  "block": "block4_marketing",
+  "вывод_по_опорному": "Ruski имеет сайт, Telegram и Instagram, программу лояльности Ruski Club с кэшбэком. Birds — только сайт и Instagram, без программы лояльности. У опорного заведения преимущество по охвату каналов и retention.",
+  "marketing_by_place": {
+    "Ruski": {
+      "сайт": "https://ruski.com",
+      "соцсети": [
+        {
+          "network": "telegram",
+          "url": "https://t.me/ruski_rest",
+          "activity": "2,8K подписчиков, постит 1-2 раза в неделю"
+        },
+        {
+          "network": "instagram",
+          "url": "https://instagram.com/ruski_rest",
+          "activity": "15K подписчиков, активное ведение, Stories"
+        }
+      ],
+      "программа_лояльности": {
+        "has_loyalty": true,
+        "loyalty_name": "Ruski Club",
+        "loyalty_format": ["кэшбэк", "спецпредложения"],
+        "loyalty_cost_per_point": "1 балл = 1 рубль",
+        "loyalty_how_to_earn": "Бонусы начисляются после регистрации и оплаты счета"
+      },
+      "вывод": "Сайт, Telegram, Instagram, программа лояльности Ruski Club.",
+      "is_reference_place": true
+    },
+    "Birds": {
+      "сайт": "https://birds.moscow",
+      "соцсети": [
+        {
+          "network": "instagram",
+          "url": "https://instagram.com/birds.moscow",
+          "activity": "6,2K подписчиков, умеренная активность"
+        }
+      ],
+      "программа_лояльности": {
+        "has_loyalty": false,
+        "loyalty_name": null,
+        "loyalty_format": null,
+        "loyalty_cost_per_point": null,
+        "loyalty_how_to_earn": null
+      },
+      "вывод": "Сайт и Instagram. Нет программы лояльности."
+    }
+  }
+}

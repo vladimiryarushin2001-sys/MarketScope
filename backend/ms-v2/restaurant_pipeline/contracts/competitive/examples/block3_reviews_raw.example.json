@@ -1,0 +1,32 @@
+[
+  {
+    "place_name": "Ruski",
+    "place_address": "1-й Красногвардейский проезд, 21с2",
+    "org_id": "9988776655",
+    "error": null,
+    "company_info": {
+      "name": "Ruski",
+      "rating": 4.6,
+      "count_rating": 3520,
+      "stars": 0
+    },
+    "reviews": [
+      {
+        "name": "Мария Л.",
+        "icon_href": "https://avatars.example.com/maria.jpg",
+        "date": 1761412913.432,
+        "text": "Красивый вид, хорошая русская кухня и сильные десерты. Посадка плотная, но сервис справился.",
+        "stars": 5,
+        "answer": ""
+      },
+      {
+        "name": "Денис Р.",
+        "icon_href": "https://avatars.example.com/denis.jpg",
+        "date": 1761413913.432,
+        "text": "Панорама впечатляет, но горячее несли дольше ожидаемого.",
+        "stars": 4,
+        "answer": ""
+      }
+    ]
+  }
+]

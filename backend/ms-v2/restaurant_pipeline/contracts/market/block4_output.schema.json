@@ -1,0 +1,68 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "market/block4_output.schema.json",
+  "title": "Market Block4 Output",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["block", "общий_вывод", "marketing_by_place"],
+  "properties": {
+    "block": { "const": "block4_marketing" },
+    "общий_вывод": { "type": "string" },
+    "marketing_by_place": {
+      "type": "object",
+      "minProperties": 1,
+      "additionalProperties": false,
+      "patternProperties": {
+        "^.+$": { "$ref": "#/$defs/placeMarketing" }
+      }
+    }
+  },
+  "$defs": {
+    "social": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["network", "url"],
+      "properties": {
+        "network": { "enum": ["telegram", "vk", "instagram", "facebook", "youtube", "dzen", "tiktok", "ok"] },
+        "url": { "type": "string", "minLength": 1 },
+        "subscribers": { "type": ["string", "null"] },
+        "publications": { "type": ["string", "null"] },
+        "activity": { "type": ["string", "null"] }
+      }
+    },
+    "placeMarketing": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["сайт", "соцсети", "программа_лояльности", "вывод"],
+      "properties": {
+        "сайт": { "type": ["string", "null"] },
+        "соцсети": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/social" }
+        },
+        "программа_лояльности": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "has_loyalty",
+            "loyalty_name",
+            "loyalty_format",
+            "loyalty_cost_per_point",
+            "loyalty_how_to_earn"
+          ],
+          "properties": {
+            "has_loyalty": { "type": "boolean" },
+            "loyalty_name": { "type": ["string", "null"] },
+            "loyalty_format": {
+              "type": ["array", "null"],
+              "items": { "type": "string", "minLength": 1 }
+            },
+            "loyalty_cost_per_point": { "type": ["string", "number", "null"] },
+            "loyalty_how_to_earn": { "type": ["string", "null"] }
+          }
+        },
+        "вывод": { "type": "string" }
+      }
+    }
+  }
+}

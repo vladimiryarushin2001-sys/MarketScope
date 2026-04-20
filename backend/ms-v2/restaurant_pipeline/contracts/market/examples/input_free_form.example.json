@@ -1,0 +1,9 @@
+{
+  "report_type": "market",
+  "mode": "free_form",
+  "top_n": 5,
+  "source_csv": "/Users/danilapertsev/Desktop/ms_v2/final_blyat_v3.csv",
+  "enrich_with_perplexity": true,
+  "perplexity_model": "sonar",
+  "free_form_text": "Рестораны русской кухни в центре Москвы с панорамным видом и средним чеком 2000-5000 рублей"
+}

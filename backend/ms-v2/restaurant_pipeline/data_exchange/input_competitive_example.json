@@ -1,0 +1,15 @@
+{
+  "report_type": "competitive",
+  "top_n": 10,
+  "source_csv": "/Users/danilapertsev/Desktop/ms_v2/final_blyat_v3.csv",
+  "enrich_with_perplexity": true,
+  "perplexity_model": "sonar",
+  "reference_place": {
+    "name": "Тануки",
+    "address": "Москва, ул. Мясницкая, 42",
+    "yandex_maps_link": "https://yandex.ru/maps/org/tanuki/1124715036/",
+    "website": "https://tanuki.ru",
+    "menu_file": null,
+    "menu_url": null
+  }
+}

@@ -1,0 +1,18 @@
+{
+  "report_type": "competitive",
+  "top_n": 5,
+  "source_csv": "/Users/danilapertsev/Desktop/ms_v2/final_blyat_v3.csv",
+  "enrich_with_perplexity": true,
+  "perplexity_model": "sonar",
+  "reference_place": {
+    "name": "Ruski",
+    "address": "1-й Красногвардейский проезд, 21с2",
+    "yandex_maps_link": "https://yandex.ru/maps/org/ruski/1234567890",
+    "website": "https://ruski.com",
+    "menu_files": [
+      "/Users/danilapertsev/Desktop/ms_v2/data/menu/ruski_menu.pdf"
+    ],
+    "menu_file": "/Users/danilapertsev/Desktop/ms_v2/data/menu/ruski_menu.pdf",
+    "menu_url": "https://ruski.com/menu"
+  }
+}

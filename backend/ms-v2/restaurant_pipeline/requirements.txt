@@ -1,0 +1,7 @@
+pandas
+python-dotenv
+langchain-community
+langchain-perplexity
+langchain-core
+pydantic
+

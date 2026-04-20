@@ -1,0 +1,58 @@
+{
+  "block": "block1_relevance",
+  "report_type": "competitive",
+  "mode": "competitive",
+  "top_n": 5,
+  "enrich_with_perplexity": true,
+  "perplexity_model": "sonar",
+  "source_csv": "/Users/danilapertsev/Desktop/ms_v2/final_blyat_v3.csv",
+  "вывод_по_опорному": "Ruski — панорамный ресторан русской кухни в Москва-Сити с высоким средним чеком (4500 ₽). На фоне Birds (5000 ₽, европейская кухня) позиционируется как более «русский» вариант с сильной кухней и меньшей барной составляющей. Рекомендуется акцент на вид и гастрономию для дифференциации.",
+  "reference_place": {
+    "name": "Ruski",
+    "address": "1-й Красногвардейский проезд, 21с2",
+    "yandex_maps_link": "https://yandex.ru/maps/org/ruski/1234567890",
+    "website": "https://ruski.com",
+    "menu_files": [
+      "/Users/danilapertsev/Desktop/ms_v2/data/menu/ruski_menu.pdf"
+    ],
+    "menu_file": "/Users/danilapertsev/Desktop/ms_v2/data/menu/ruski_menu.pdf",
+    "menu_url": "https://ruski.com/menu"
+  },
+  "selected_places": [
+    {
+      "название": "Ruski",
+      "адрес": "1-й Красногвардейский проезд, 21с2",
+      "тип_заведения": "панорамный ресторан",
+      "кухня": "русская, авторская",
+      "средний_чек": 4500,
+      "описание": "Панорамный ресторан на высокой точке города с современной интерпретацией русской кухни.",
+      "ссылка": "https://www.restoclub.ru/msk/place/ruski",
+      "cosine_score": null,
+      "сайт": "https://ruski.com",
+      "доставка": false,
+      "время_работы": "Ежедневно 12:00-00:00",
+      "is_reference_place": true,
+      "yandex_maps_link": "https://yandex.ru/maps/org/ruski/1234567890",
+      "menu_files": [
+        "/Users/danilapertsev/Desktop/ms_v2/data/menu/ruski_menu.pdf"
+      ],
+      "menu_file": "/Users/danilapertsev/Desktop/ms_v2/data/menu/ruski_menu.pdf",
+      "menu_url": "https://ruski.com/menu",
+      "вывод": "Опорное заведение: панорамный ресторан русской кухни, средний чек 4500 ₽, сильная дифференциация по виду и гастрономии."
+    },
+    {
+      "название": "Birds",
+      "адрес": "1-й Красногвардейский проезд, 21с2",
+      "тип_заведения": "панорамный ресторан",
+      "кухня": "европейская, авторская",
+      "средний_чек": 5000,
+      "описание": "Панорамный ресторан с ярким интерьером, коктейльной картой и акцентом на вечерний трафик.",
+      "ссылка": "https://www.restoclub.ru/msk/place/birds",
+      "cosine_score": 0.72,
+      "сайт": "https://birds.moscow",
+      "доставка": false,
+      "время_работы": "Ежедневно 12:00-02:00",
+      "вывод": "Ближайший конкурент: панорамный ресторан с европейской кухней, средний чек 5000 ₽, упор на вечернюю атмосферу и коктейли."
+    }
+  ]
+}
