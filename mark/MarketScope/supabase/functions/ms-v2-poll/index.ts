@@ -119,6 +119,8 @@ Deno.serve(async (req) => {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          // Шлюз Supabase ожидает apikey вместе с Authorization (как у клиента).
+          apikey: serviceRoleKey,
           Authorization: `Bearer ${serviceRoleKey}`,
         },
         body: JSON.stringify({

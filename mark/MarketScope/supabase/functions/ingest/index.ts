@@ -72,6 +72,21 @@ function toNumberSafe(v: unknown): number {
   return 0;
 }
 
+/** JWT от service_role нельзя передавать в auth.getUser — берём user_id из тела (доверенный server-to-server вызов). */
+function jwtRole(bearer: string): string | null {
+  const parts = bearer.split(".");
+  if (parts.length < 2) return null;
+  try {
+    const b64 = parts[1].replace(/-/g, "+").replace(/_/g, "/");
+    const pad = b64.length % 4 === 0 ? "" : "=".repeat(4 - (b64.length % 4));
+    const json = atob(b64 + pad);
+    const payload = JSON.parse(json) as { role?: string };
+    return typeof payload.role === "string" ? payload.role : null;
+  } catch {
+    return null;
+  }
+}
+
 function v2DatasetFromBlocks(blocks: Record<string, unknown>): JsonDataset {
   const b1 = asObject(blocks.block1 ?? blocks.block1_output ?? blocks["block1_output.json"] ?? blocks["block1"]);
   const b2 = asObject(blocks.block2 ?? blocks.block2_output ?? blocks["block2_output.json"] ?? blocks["block2"]);
@@ -376,7 +391,8 @@ Deno.serve(async (req: Request) => {
     let userId: string | null = null;
     const authHeader = req.headers.get("Authorization") ?? "";
     const bearer = authHeader.toLowerCase().startsWith("bearer ") ? authHeader.slice(7).trim() : "";
-    if (bearer) {
+    const role = bearer ? jwtRole(bearer) : null;
+    if (bearer && role !== "service_role") {
       const u = await supabase.auth.getUser(bearer);
       if (!u.error && u.data.user) userId = u.data.user.id;
     }
