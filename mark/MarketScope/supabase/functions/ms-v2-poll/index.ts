@@ -53,6 +53,8 @@ Deno.serve(async (req) => {
   try {
     const supabaseUrl = Deno.env.get("SUPABASE_URL") ?? "";
     const serviceRoleKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "";
+    /** Шлюз /functions/v1 часто проверяет apikey как anon public; service_role оставляем в Authorization. */
+    const anonApiKey = Deno.env.get("SUPABASE_ANON_KEY") ?? serviceRoleKey;
     const msV2Url = (Deno.env.get("MS_V2_URL") ?? "").replace(/\/+$/, "");
     if (!supabaseUrl || !serviceRoleKey) return json(500, { error: "Missing SUPABASE_URL or SUPABASE_SERVICE_ROLE_KEY" });
     if (!msV2Url) return json(500, { error: "Missing MS_V2_URL env" });
@@ -167,8 +169,7 @@ Deno.serve(async (req) => {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          // Шлюз Supabase ожидает apikey вместе с Authorization (как у клиента).
-          apikey: serviceRoleKey,
+          apikey: anonApiKey,
           Authorization: `Bearer ${serviceRoleKey}`,
         },
         body: JSON.stringify({

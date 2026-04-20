@@ -370,6 +370,26 @@ def parse_reviews_for_place(
 
 
 
+def _detect_chrome_major_version() -> int | None:
+    """Мажорная версия установленного Chrome/Chromium (как в block5_tech)."""
+    import subprocess
+
+    for path in (
+        "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
+        "google-chrome",
+        "chromium-browser",
+        "chromium",
+    ):
+        try:
+            out = subprocess.check_output([path, "--version"], stderr=subprocess.DEVNULL, timeout=5)
+            m = re.search(r"(\d+)\.", out.decode())
+            if m:
+                return int(m.group(1))
+        except Exception:
+            continue
+    return None
+
+
 def main():
     parser = argparse.ArgumentParser(description="Парсинг отзывов Яндекс Карт по CSV заведений")
     parser.add_argument(
@@ -397,8 +417,11 @@ def main():
     parser.add_argument(
         "--chrome-version",
         type=int,
-        default=145,
-        help="Мажорная версия Chrome (например 145). Должна совпадать с установленной. По умолчанию 145.",
+        default=None,
+        help=(
+            "Мажорная версия Chrome для undetected_chromedriver (например 147). "
+            "По умолчанию определяется из `google-chrome --version`, иначе 145."
+        ),
     )
     parser.add_argument(
         "--save-page",
@@ -416,11 +439,14 @@ def main():
     )
     args = parser.parse_args()
 
+    chrome_major = args.chrome_version
+    if chrome_major is None:
+        chrome_major = _detect_chrome_major_version() or 145
 
     profile_dir = Path(args.profile_dir)
     profile_dir.mkdir(parents=True, exist_ok=True)
 
-    _chrome_version = args.chrome_version
+    _chrome_version = chrome_major
     _original_chrome_init = uc.Chrome.__init__
 
     def _patched_chrome_init(self, *args_init, **kwargs):
@@ -473,8 +499,8 @@ def main():
 
     results = []
     print(
-        f"Используется ChromeDriver для Chrome {args.chrome_version} "
-        "(укажи --chrome-version N, если версия другая)."
+        f"Используется ChromeDriver для Chrome {chrome_major} "
+        f"({'явный --chrome-version' if args.chrome_version is not None else 'авто из google-chrome'})."
     )
 
 

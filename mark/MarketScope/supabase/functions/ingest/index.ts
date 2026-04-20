@@ -404,17 +404,27 @@ Deno.serve(async (req: Request) => {
     const authHeader = req.headers.get("Authorization") ?? "";
     const bearer = authHeader.toLowerCase().startsWith("bearer ") ? authHeader.slice(7).trim() : "";
     const role = bearer ? jwtRole(bearer) : null;
-    if (bearer && role !== "service_role") {
+    // Server-to-server (ms-v2-poll): Authorization = service_role, user_id в теле — не вызываем getUser(service JWT).
+    if (role === "service_role") {
+      userId = incomingUserId ?? null;
+    } else if (bearer) {
       const u = await supabase.auth.getUser(bearer);
       if (!u.error && u.data.user) userId = u.data.user.id;
     }
+    if (!userId && incomingUserId) userId = incomingUserId;
     if (!userId && body.user_id) userId = String(body.user_id);
 
     if (!userId) {
-      return new Response(JSON.stringify({ error: "User is required (Authorization Bearer user JWT or user_id in body)" }), {
-        status: 401,
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
+      return new Response(
+        JSON.stringify({
+          error:
+            "User is required: pass user JWT in Authorization, or for service_role calls include user_id in JSON body",
+        }),
+        {
+          status: 401,
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+        },
+      );
     }
 
     // report_type: пробуем взять из block1/blocks, иначе пусто
