@@ -3,6 +3,7 @@ import { AuthProvider, useAuth } from './contexts/AuthContext';
 import PreviewPage from './pages/PreviewPage';
 import Header from './components/common/Header';
 import Navigation from './components/common/Navigation';
+import { Footer } from './components/common/Footer';
 import OverviewTab from './components/overview/OverviewTab';
 import TechnicalAnalysisTab from './components/technical/TechnicalAnalysisTab';
 import ReviewAnalysisTab from './components/reviews/ReviewAnalysisTab';
@@ -283,7 +284,12 @@ const CompetitorAnalysisDashboard: React.FC = () => {
 
 const App: React.FC = () => (
   <AuthProvider>
-    <AppContent />
+    <div className="min-h-screen flex flex-col">
+      <div className="flex-1">
+        <AppContent />
+      </div>
+      <Footer />
+    </div>
   </AuthProvider>
 );
 
