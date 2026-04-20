@@ -1,0 +1,41 @@
+version: "3.9"
+
+services:
+  ms-v2-redis:
+    image: redis:7-alpine
+    restart: unless-stopped
+    volumes:
+      - ms_v2_redis_data:/data
+
+  ms-v2-api:
+    build:
+      context: ./backend/ms-v2
+    restart: unless-stopped
+    ports:
+      - "8000:8000"
+    env_file:
+      - ./backend/ms-v2/.env
+    depends_on:
+      - ms-v2-redis
+    command: uvicorn service.app.main:app --host 0.0.0.0 --port 8000
+
+  ms-v2-worker:
+    build:
+      context: ./backend/ms-v2
+    restart: unless-stopped
+    env_file:
+      - ./backend/ms-v2/.env
+    depends_on:
+      - ms-v2-redis
+    volumes:
+      # CSV монтируется с хоста — можно обновлять без пересборки образа
+      - ./backend/ms-v2/final_blyat_v3.csv:/app/final_blyat_v3.csv:ro
+      # Папка с результатами задач
+      - ms_v2_jobs_data:/app/jobs
+    command: bash service/worker_start.sh
+    shm_size: "2gb"
+
+volumes:
+  ms_v2_redis_data:
+  ms_v2_jobs_data:
+

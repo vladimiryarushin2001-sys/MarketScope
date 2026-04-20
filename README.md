@@ -116,5 +116,23 @@ marketscope/
 - Микросервис **MarketScope API (v2)** (FastAPI + Celery + Redis), который выполняет тяжёлый анализ и отдаёт `job_id`/прогресс/`outputs`, хранится в репозитории рядом с фронтом в **`backend/ms-v2/`** (это содержимое ветки `ms-v2`, импортированное как subtree).
 - Исторические каталоги **`MarketScope/`**, **`project/`**, **`tmp/`** в **корне** репозитория в git **не отслеживаются** (см. `.gitignore`); актуальная веб-часть — в **`mark/MarketScope/`**.
 
+---
+
+## Запуск микросервиса `ms-v2` локально (Docker)
+
+1. Подготовить переменные окружения:
+   - Скопируй `backend/ms-v2/.env.example` → `backend/ms-v2/.env` и заполни ключи.
+2. Подложить CSV (если используешь сценарии, которые требуют базу):
+   - положи файл `final_blyat_v3.csv` в `backend/ms-v2/final_blyat_v3.csv`
+3. Запуск:
+
+```bash
+docker compose -f docker-compose.ms-v2.yml up --build -d
+```
+
+Проверка:
+- `GET http://localhost:8000/health`
+- `POST http://localhost:8000/analyze` (см. примеры в `backend/ms-v2/README.md`)
+
 
 
