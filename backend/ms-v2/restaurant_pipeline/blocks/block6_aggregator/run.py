@@ -86,8 +86,14 @@ def _project_root() -> Path:
 
 
 def _read_json(path: str) -> dict:
-    with open(path, "r", encoding="utf-8") as f:
-        return json.load(f)
+    try:
+        with open(path, "r", encoding="utf-8") as f:
+            return json.load(f)
+    except FileNotFoundError:
+        # Если один из блоков упал, orchestrator может продолжить до block6.
+        # Block6 должен уметь собрать отчёт из имеющихся данных.
+        print(f"[block6] WARNING: missing json input: {path}", flush=True)
+        return {}
 
 
 def _strip_thinking(text: str) -> str:
