@@ -1,8 +1,11 @@
 services:
-  - type: redis
+  - type: keyvalue
     name: marketscope-ms-v2-redis
     plan: starter
     maxmemoryPolicy: noeviction
+    ipAllowList:
+      - source: 0.0.0.0/0
+        description: everywhere
 
   - type: web
     name: marketscope-ms-v2-api
@@ -14,7 +17,7 @@ services:
     envVars:
       - key: REDIS_URL
         fromService:
-          type: redis
+          type: keyvalue
           name: marketscope-ms-v2-redis
           property: connectionString
       - key: PROJECT_ROOT
@@ -33,7 +36,7 @@ services:
         sync: false
       - key: GIGACHAT_CREDENTIALS
         sync: false
-    startCommand: bash service/start_api.sh
+    dockerCommand: bash service/start_api.sh
 
   - type: worker
     name: marketscope-ms-v2-worker
@@ -44,7 +47,7 @@ services:
     envVars:
       - key: REDIS_URL
         fromService:
-          type: redis
+          type: keyvalue
           name: marketscope-ms-v2-redis
           property: connectionString
       - key: PROJECT_ROOT
@@ -65,5 +68,5 @@ services:
       name: ms-v2-jobs
       mountPath: /app/jobs
       sizeGB: 10
-    startCommand: bash service/start_worker.sh
+    dockerCommand: bash service/start_worker.sh
 
