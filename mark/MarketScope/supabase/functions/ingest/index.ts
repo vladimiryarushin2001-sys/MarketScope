@@ -211,7 +211,9 @@ function v2DatasetFromBlocks(blocks: Record<string, unknown>): JsonDataset {
     row.positive_reviews = positive;
     row.negative_reviews = negative;
   });
-  const referenceConclusion = toStringSafe(b3["вывод_по_опорному"] ?? b3.reference_conclusion);
+  const referenceConclusion = toStringSafe(
+    b3["вывод_по_опорному"] ?? b3["общий_вывод"] ?? b3.reference_conclusion,
+  );
   if (referenceConclusion) {
     reviews.forEach((r) => {
       r.reference_conclusion = referenceConclusion;
@@ -233,7 +235,9 @@ function v2DatasetFromBlocks(blocks: Record<string, unknown>): JsonDataset {
       id: marketingId,
       restaurant_id: restId,
       site: toStringSafe(m["сайт"] ?? m.site),
-      reference_conclusion: toStringSafe(b4["вывод_по_опорному"] ?? b4.reference_conclusion),
+      reference_conclusion: toStringSafe(
+        b4["вывод_по_опорному"] ?? b4["общий_вывод"] ?? b4.reference_conclusion,
+      ),
       conclusion: toStringSafe(m["вывод"] ?? m.conclusion),
     });
     const socials = asArray(m["соцсети"]).map((x) => asObject(x));
@@ -285,7 +289,9 @@ function v2DatasetFromBlocks(blocks: Record<string, unknown>): JsonDataset {
       https: Boolean(t.https),
       has_viewport: Boolean(t.has_viewport),
       error: toStringSafe(t.error),
-      reference_conclusion: toStringSafe(b5["вывод_по_опорному"] ?? b5.reference_conclusion),
+      reference_conclusion: toStringSafe(
+        b5["вывод_по_опорному"] ?? b5["общий_вывод"] ?? b5.reference_conclusion,
+      ),
       conclusion: toStringSafe(t["вывод"] ?? t.conclusion),
     });
   }
@@ -301,7 +307,9 @@ function v2DatasetFromBlocks(blocks: Record<string, unknown>): JsonDataset {
       if (!menu) continue;
       const t = asObject(tObj);
       menu.conclusion = toStringSafe(t["вывод"] ?? t.conclusion);
-      menu.reference_conclusion = toStringSafe(b5["вывод_по_опорному"] ?? b5.reference_conclusion);
+      menu.reference_conclusion = toStringSafe(
+        b5["вывод_по_опорному"] ?? b5["общий_вывод"] ?? b5.reference_conclusion,
+      );
     }
   }
 
