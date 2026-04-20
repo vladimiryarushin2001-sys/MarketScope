@@ -43,9 +43,9 @@ Deno.serve(async (req) => {
     if (!supabaseUrl || !serviceRoleKey) return json(500, { error: "Missing SUPABASE_URL or SUPABASE_SERVICE_ROLE_KEY" });
     if (!msV2Url) return json(500, { error: "Missing MS_V2_URL env" });
 
-    const supabase = createClient(supabaseUrl, serviceRoleKey, {
-      global: { headers: { Authorization: req.headers.get("Authorization") ?? "" } },
-    });
+    // Use service role for DB writes; do not forward incoming Authorization header,
+    // otherwise it may override auth.getUser(jwt) and cause "Invalid user token".
+    const supabase = createClient(supabaseUrl, serviceRoleKey);
 
     const authHeader = req.headers.get("Authorization") ?? "";
     const bearer = authHeader.toLowerCase().startsWith("bearer ") ? authHeader.slice(7).trim() : "";
