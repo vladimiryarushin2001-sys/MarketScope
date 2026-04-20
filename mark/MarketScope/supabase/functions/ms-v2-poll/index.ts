@@ -62,11 +62,22 @@ Deno.serve(async (req) => {
 
     const { data: runRow, error: runErr } = await supabase
       .from("analysis_runs")
-      .select("id,request_id,report_type,status,progress,job_id")
+      .select("id,request_id,report_type,status,progress,job_id,finished_at")
       .eq("id", runId)
       .maybeSingle();
     if (runErr) return json(500, { error: errToMessage(runErr) });
     if (!runRow) return json(404, { error: "Run not found" });
+
+    const dbStatusEarly = toStringSafe(runRow.status);
+    if ((dbStatusEarly === "done" || dbStatusEarly === "done_partial") && runRow.finished_at) {
+      return json(200, {
+        ok: true,
+        status: dbStatusEarly,
+        progress: toStringSafe(runRow.progress),
+        ingested: false,
+        skipped: "already_finalized",
+      });
+    }
 
     // Ownership check via client_requests
     const { data: reqRow, error: reqErr } = await supabase

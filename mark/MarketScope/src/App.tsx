@@ -234,14 +234,28 @@ const CompetitorAnalysisDashboard: React.FC = () => {
   const isRunErrored = Boolean(activeRun && activeRun.status === 'error');
   const shouldBlurTabsWhileRunning = Boolean(isRunInProgress && dataLoaded && restaurants.length === 0);
 
-  // Poll ms-v2 job status while in progress (client-driven)
+  /** Все незавершённые прогоны по аккаунту — иначе при выборе «старого» запроса в шапке новый run не опрашивается и ingest не вызывается. */
+  const runIdsNeedingPollKey = useMemo(() => {
+    const ids = runs
+      .filter((r) => r.status === 'pending' || r.status === 'running')
+      .map((r) => r.id)
+      .sort((a, b) => a - b);
+    return ids.join(',');
+  }, [runs]);
+
+  // Poll ms-v2 for every pending/running run (client-driven ingest on completion)
   React.useEffect(() => {
-    if (!activeRun?.id) return;
-    if (!isRunInProgress) return;
+    if (!runIdsNeedingPollKey) return;
+    const runIds = runIdsNeedingPollKey.split(',').map((s) => Number(s)).filter((n) => Number.isFinite(n) && n > 0);
+    if (runIds.length === 0) return;
+
     let cancelled = false;
     const tick = async () => {
       try {
-        await invokeEdgeFunction('ms-v2-poll', { run_id: activeRun.id });
+        for (const runId of runIds) {
+          if (cancelled) return;
+          await invokeEdgeFunction('ms-v2-poll', { run_id: runId });
+        }
         if (!cancelled) reloadRequests({ silent: true });
       } catch {
         // ignore transient errors; we'll try again
@@ -249,11 +263,16 @@ const CompetitorAnalysisDashboard: React.FC = () => {
     };
     tick();
     const t = window.setInterval(tick, 6000);
+    const onVisible = () => {
+      if (document.visibilityState === 'visible') void tick();
+    };
+    document.addEventListener('visibilitychange', onVisible);
     return () => {
       cancelled = true;
       window.clearInterval(t);
+      document.removeEventListener('visibilitychange', onVisible);
     };
-  }, [activeRun?.id, isRunInProgress, reloadRequests]);
+  }, [runIdsNeedingPollKey, reloadRequests]);
 
   if (showAIStrategy) {
     return (
