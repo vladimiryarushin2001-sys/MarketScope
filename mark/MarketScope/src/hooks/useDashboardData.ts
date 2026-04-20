@@ -172,7 +172,7 @@ export function useDashboardData(runId?: number | null) {
     }
 
     return () => { cancelled = true; };
-  }, [refreshTrigger]);
+  }, [refreshTrigger, runId]);
 
   const marketingChannelsByRestaurant = useMemo(() => {
     const map = new Map<number, Array<{ channel: string; reach?: number; engagement?: number; cost?: number }>>();
