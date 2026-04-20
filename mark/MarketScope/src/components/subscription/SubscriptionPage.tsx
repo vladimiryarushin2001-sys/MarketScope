@@ -13,6 +13,8 @@ type Plan = {
   title: string;
   monthPrice: string;
   yearPrice: string;
+  summary: string;
+  details: string;
   features: Array<{ text: string; included: boolean }>;
   accent: string;
 };
@@ -21,9 +23,41 @@ const plans: Plan[] = [
   {
     code: 'starter',
     title: 'Стартовый',
-    monthPrice: '5 000 ₽/мес',
-    yearPrice: 'или 50 000 ₽/год',
+    monthPrice: '10 000 ₽/мес',
+    yearPrice: 'или 100 000 ₽/год',
     accent: 'bg-blue-900/80',
+    summary:
+      'Для точечного анализа: до 5 аналитических запросов в месяц, отчёт и базовые инсайты. Экспорт результатов (PDF/таблицы).',
+    details: [
+      'Тариф «Стартовый»',
+      '',
+      'Стоимость:',
+      '10 000 ₽ в месяц',
+      '100 000 ₽ в год',
+      '',
+      'Описание услуги:',
+      'Предоставление доступа к SaaS-платформе MarketScope для автоматического анализа на основе открытых данных (отзывы, цены, онлайн-активность).',
+      '',
+      'Характеристики:',
+      'До 5 аналитических запросов в месяц',
+      'Анализ сравнения (цены, отзывы, позиционирование)',
+      'Формирование аналитического отчета',
+      'Базовые рекомендации (инсайты)',
+      'Доступ к веб-интерфейсу платформы',
+      '',
+      'Комплектация (что получает пользователь):',
+      'Личный кабинет пользователя',
+      'Доступ к отчетам в цифровом формате',
+      'Возможность выгрузки результатов (PDF/таблицы)',
+      '',
+      'Условия оказания услуг:',
+      'Услуга применяется в течение оплаченного периода (1 месяц / 1 год)',
+      'Неиспользованные запросы не переносятся в следующий период',
+      '',
+      'Гарантийные условия:',
+      'В случае технической невозможности предоставления услуги (сбой системы) — продление периода подписки или возврат средств за неоказанную часть услуги.',
+      'Техническая поддержка в рабочее время',
+    ].join('\n'),
     features: [
       { text: 'До 5 конкурентов', included: true },
       { text: 'Базовая аналитика', included: true },
@@ -39,6 +73,38 @@ const plans: Plan[] = [
     monthPrice: '15 000 ₽/мес',
     yearPrice: 'или 150 000 ₽/год',
     accent: 'bg-cyan-900/80',
+    summary:
+      'Для регулярного мониторинга: до 10 аналитических запросов в месяц, отчёты и инсайты. Экспорт результатов (PDF/таблицы).',
+    details: [
+      'Тариф «Бизнес»',
+      '',
+      'Стоимость:',
+      '15 000 ₽ в месяц',
+      '150 000 ₽ в год',
+      '',
+      'Описание услуги:',
+      'Расширенный доступ к платформе MarketScope для регулярного анализа конкурентной среды и получения более традиционных аналитических инсайтов.',
+      '',
+      'Характеристики:',
+      'До 10 аналитических запросов в месяц',
+      'Анализ сравнения (цены, отзывы, позиционирование)',
+      'Формирование аналитического отчета',
+      'Базовые рекомендации (инсайты)',
+      'Доступ к веб-интерфейсу платформы',
+      '',
+      'Комплектация (что получает пользователь):',
+      'Личный кабинет пользователя',
+      'Доступ к отчетам в цифровом формате',
+      'Возможность выгрузки результатов (PDF/таблицы)',
+      '',
+      'Условия оказания услуг:',
+      'Услуга применяется в течение оплаченного периода (1 месяц / 1 год)',
+      'Неиспользованные запросы не переносятся в следующий период',
+      '',
+      'Гарантийные условия:',
+      'В случае технической невозможности предоставления услуги (сбой системы) — продление периода подписки или возврат средств за неоказанную часть услуги.',
+      'Техническая поддержка в рабочее время',
+    ].join('\n'),
     features: [
       { text: 'До 15 конкурентов', included: true },
       { text: 'Расширенная аналитика', included: true },
@@ -54,6 +120,36 @@ const plans: Plan[] = [
     monthPrice: 'По договоренности',
     yearPrice: '',
     accent: 'bg-indigo-900/80',
+    summary:
+      'Индивидуальное решение: неограниченные запросы, кастомизация аналитики и интеграции. Выделенная поддержка и SLA по договору.',
+    details: [
+      'Тариф «Энтрепрайс»',
+      '',
+      'Стоимость:',
+      'Определяется индивидуально (по договору)',
+      '',
+      'Описание услуги:',
+      'Индивидуальное решение для компаний с четким определением аналитических задач и потребностями в кастомизации.',
+      '',
+      'Характеристики:',
+      'Неограниченное количество аналитических запросов',
+      'Индивидуальная настройка аналитики под бизнес-задачи',
+      'Расширенные исходные данные',
+      'Интеграции с внешними сетями (при необходимости)',
+      'Выделенная поддержка',
+      '',
+      'Комплектация:',
+      'Персональный менеджер',
+      'Индивидуальные отчеты',
+      '',
+      'Условия оказания услуг:',
+      'Условия фиксируются в индивидуальном договоре',
+      'SLA (уровень сервиса) согласовывается отдельно',
+      '',
+      'Гарантийные условия:',
+      'Закрепляются договором',
+      'Возможные соглашения об уровне обслуживания по доступности сервиса',
+    ].join('\n'),
     features: [
       { text: 'Неограниченное число конкурентов', included: true },
       { text: 'Полный доступ к платформе', included: true },
@@ -71,6 +167,7 @@ const SubscriptionPage: React.FC<SubscriptionPageProps> = ({ onBackToRequest }) 
   const { isActive, isLifetime, daysLeft, subscription } = useSubscriptionStatus();
   const [loadingCode, setLoadingCode] = useState<string>('');
   const [error, setError] = useState('');
+  const [detailsCode, setDetailsCode] = useState<Plan['code'] | null>(null);
 
   const statusText = useMemo(() => {
     if (isLifetime) return 'Бессрочная активная подписка';
@@ -158,6 +255,14 @@ const SubscriptionPage: React.FC<SubscriptionPageProps> = ({ onBackToRequest }) 
               <h3 className="text-2xl font-semibold">{plan.title}</h3>
               <p className="mt-3 text-3xl font-bold">{plan.monthPrice}</p>
               {plan.yearPrice ? <p className="mt-1 text-white/70">{plan.yearPrice}</p> : null}
+              <p className="mt-4 text-sm text-white/85 leading-relaxed">{plan.summary}</p>
+              <button
+                type="button"
+                onClick={() => setDetailsCode(plan.code)}
+                className="mt-3 text-sm text-white/90 hover:text-white underline underline-offset-4"
+              >
+                Подробнее
+              </button>
             </div>
             <div className="p-6 space-y-3">
               {plan.features.map((f, i) => (
@@ -189,6 +294,39 @@ const SubscriptionPage: React.FC<SubscriptionPageProps> = ({ onBackToRequest }) 
           </div>
         ))}
       </div>
+
+      {detailsCode ? (
+        <>
+          <button
+            type="button"
+            className="fixed inset-0 bg-black/40 z-[9000]"
+            aria-label="Close details"
+            onClick={() => setDetailsCode(null)}
+          />
+          <div className="fixed inset-0 z-[9100] flex items-center justify-center p-4">
+            <div className="w-full max-w-2xl rounded-2xl bg-white shadow-2xl border border-gray-200 overflow-hidden">
+              <div className="flex items-center justify-between px-5 py-4 border-b border-gray-200">
+                <h4 className="text-lg font-semibold text-gray-900">
+                  {plans.find((p) => p.code === detailsCode)?.title ?? 'Тариф'}
+                </h4>
+                <button
+                  type="button"
+                  onClick={() => setDetailsCode(null)}
+                  className="p-2 rounded-lg hover:bg-gray-100"
+                  aria-label="Закрыть"
+                >
+                  <X className="w-5 h-5 text-gray-600" />
+                </button>
+              </div>
+              <div className="p-5">
+                <pre className="whitespace-pre-wrap text-sm text-gray-800 leading-relaxed">
+                  {plans.find((p) => p.code === detailsCode)?.details ?? ''}
+                </pre>
+              </div>
+            </div>
+          </div>
+        </>
+      ) : null}
 
       {subscription && !isLifetime && (
         <div className="text-sm text-gray-500">
