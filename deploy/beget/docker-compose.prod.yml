@@ -1,0 +1,54 @@
+version: "3.9"
+
+services:
+  redis:
+    image: redis:7-alpine
+    restart: unless-stopped
+    command: ["redis-server", "--appendonly", "yes"]
+    volumes:
+      - redis_data:/data
+
+  api:
+    build:
+      context: ../../backend/ms-v2
+    restart: unless-stopped
+    env_file:
+      - ./.env.ms-v2
+    depends_on:
+      - redis
+    expose:
+      - "8000"
+    command: bash service/start_api.sh
+
+  worker:
+    build:
+      context: ../../backend/ms-v2
+    restart: unless-stopped
+    env_file:
+      - ./.env.ms-v2
+    depends_on:
+      - redis
+    volumes:
+      - jobs_data:/app/jobs
+    shm_size: "1gb"
+    command: bash service/start_worker.sh
+
+  caddy:
+    image: caddy:2-alpine
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+      - caddy_config:/config
+    depends_on:
+      - api
+
+volumes:
+  redis_data:
+  jobs_data:
+  caddy_data:
+  caddy_config:
+

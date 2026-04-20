@@ -26,3 +26,6 @@ curl -fsSL "$CSV_URL" -o "$tmp"
 mv "$tmp" "$CSV_PATH"
 echo "[ms-v2] CSV downloaded to $CSV_PATH"
 
+# Optional: keep file permissions readable
+chmod 0644 "$CSV_PATH" || true
+

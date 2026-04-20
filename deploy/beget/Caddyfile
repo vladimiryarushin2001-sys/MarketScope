@@ -1,0 +1,16 @@
+{
+  # email for Let's Encrypt account (set to your email)
+  email {$ACME_EMAIL}
+}
+
+{$MS_V2_DOMAIN} {
+  encode zstd gzip
+  reverse_proxy api:8000
+}
+
+# If you don't have a domain yet, you can comment the block above
+# and use this HTTP-only fallback:
+# :80 {
+#   reverse_proxy api:8000
+# }
+
