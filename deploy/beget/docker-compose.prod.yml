@@ -27,10 +27,16 @@ services:
     environment:
       # Hard cap to avoid Celery defaulting to high CPU count.
       CELERY_CONCURRENCY: "1"
+      # HuggingFace/Transformers caches (keep between restarts/rebuilds via volumes)
+      HF_HOME: /root/.cache/huggingface
+      TRANSFORMERS_CACHE: /root/.cache/huggingface/transformers
+      SENTENCE_TRANSFORMERS_HOME: /root/.cache/huggingface/sentence-transformers
     depends_on:
       - redis
     volumes:
       - jobs_data:/app/jobs
+      - encoder_cache:/app/encoder_cache
+      - hf_cache:/root/.cache/huggingface
     shm_size: "1gb"
     command: bash service/start_worker.sh
 
@@ -52,4 +58,6 @@ volumes:
   jobs_data:
   caddy_data:
   caddy_config:
+  encoder_cache:
+  hf_cache:
 
