@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { Check, X } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
 import { supabase } from '../../lib/supabase';
@@ -195,6 +195,21 @@ const SubscriptionPage: React.FC<SubscriptionPageProps> = ({ onBackToRequest }) 
   const [error, setError] = useState('');
   const [detailsCode, setDetailsCode] = useState<Plan['code'] | null>(null);
 
+  // Lock background scroll + allow closing details with Escape.
+  useEffect(() => {
+    if (!detailsCode) return;
+    const prevOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setDetailsCode(null);
+    };
+    window.addEventListener('keydown', onKeyDown);
+    return () => {
+      document.body.style.overflow = prevOverflow;
+      window.removeEventListener('keydown', onKeyDown);
+    };
+  }, [detailsCode]);
+
   const statusText = useMemo(() => {
     if (isLifetime) return 'Бессрочная активная подписка';
     if (isActive) return `Подписка активна${daysLeft != null ? `, осталось ${daysLeft} дн.` : ''}`;
@@ -342,14 +357,18 @@ const SubscriptionPage: React.FC<SubscriptionPageProps> = ({ onBackToRequest }) 
 
       {detailsCode ? (
         <>
-          <button
-            type="button"
+          <div
             className="fixed inset-0 bg-black/40 z-[9000]"
-            aria-label="Close details"
+            aria-hidden="true"
             onClick={() => setDetailsCode(null)}
           />
-          <div className="fixed inset-0 z-[9100] flex items-center justify-center p-4">
-            <div className="w-full max-w-2xl rounded-2xl bg-white shadow-2xl border border-gray-200 overflow-hidden">
+          <div className="fixed inset-0 z-[9100] flex items-center justify-center p-3 sm:p-6">
+            <div
+              role="dialog"
+              aria-modal="true"
+              className="w-full max-w-2xl rounded-2xl bg-white shadow-2xl border border-gray-200 overflow-hidden max-h-[calc(100vh-24px)] sm:max-h-[calc(100vh-48px)] flex flex-col"
+              onClick={(e) => e.stopPropagation()}
+            >
               <div className="flex items-center justify-between px-5 py-4 border-b border-gray-200">
                 <h4 className="text-lg font-semibold text-gray-900">
                   {plans.find((p) => p.code === detailsCode)?.title ?? 'Тариф'}
@@ -363,8 +382,8 @@ const SubscriptionPage: React.FC<SubscriptionPageProps> = ({ onBackToRequest }) 
                   <X className="w-5 h-5 text-gray-600" />
                 </button>
               </div>
-              <div className="p-5">
-                <pre className="whitespace-pre-wrap text-sm text-gray-800 leading-relaxed">
+              <div className="p-5 overflow-y-auto min-h-0">
+                <pre className="whitespace-pre-wrap break-words text-sm text-gray-800 leading-relaxed">
                   {plans.find((p) => p.code === detailsCode)?.details ?? ''}
                 </pre>
               </div>
