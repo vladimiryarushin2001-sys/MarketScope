@@ -11,7 +11,7 @@ services:
       context: ../../backend/ms-v2
     restart: unless-stopped
     env_file:
-      - ./.env.ms-v2
+      - /opt/marketscope/deploy/beget/.env.ms-v2
     depends_on:
       - redis
     expose:
@@ -23,7 +23,7 @@ services:
       context: ../../backend/ms-v2
     restart: unless-stopped
     env_file:
-      - ./.env.ms-v2
+      - /opt/marketscope/deploy/beget/.env.ms-v2
     environment:
       # Hard cap to avoid Celery defaulting to high CPU count.
       CELERY_CONCURRENCY: "1"
