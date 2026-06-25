@@ -1,8 +1,8 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { Check, X } from 'lucide-react';
-import { useAuth } from '../../contexts/AuthContext';
-import { supabase } from '../../lib/supabase';
 import { useSubscriptionStatus } from '../../hooks/useSubscriptionStatus';
+
+const SUPPORT_EMAIL = 'marketscope@mail.ru';
 
 interface SubscriptionPageProps {
   onBackToRequest?: () => void;
@@ -186,88 +186,34 @@ const plans: Plan[] = [
   },
 ];
 
-const PLAN_AMOUNTS: Record<string, number> = { starter: 500000, business: 1500000 }; // kopecks
-
 const SubscriptionPage: React.FC<SubscriptionPageProps> = ({ onBackToRequest }) => {
-  const { user, session } = useAuth();
   const { isActive, isLifetime, daysLeft, subscription } = useSubscriptionStatus();
-  const [loadingCode, setLoadingCode] = useState<string>('');
-  const [error, setError] = useState('');
   const [detailsCode, setDetailsCode] = useState<Plan['code'] | null>(null);
+  const [showUnavailable, setShowUnavailable] = useState(false);
 
-  // Lock background scroll + allow closing details with Escape.
+  // Lock background scroll + allow closing any open dialog with Escape.
   useEffect(() => {
-    if (!detailsCode) return;
+    if (!detailsCode && !showUnavailable) return;
     const prevOverflow = document.body.style.overflow;
     document.body.style.overflow = 'hidden';
     const onKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') setDetailsCode(null);
+      if (e.key === 'Escape') {
+        setDetailsCode(null);
+        setShowUnavailable(false);
+      }
     };
     window.addEventListener('keydown', onKeyDown);
     return () => {
       document.body.style.overflow = prevOverflow;
       window.removeEventListener('keydown', onKeyDown);
     };
-  }, [detailsCode]);
+  }, [detailsCode, showUnavailable]);
 
   const statusText = useMemo(() => {
     if (isLifetime) return 'Бессрочная активная подписка';
     if (isActive) return `Подписка активна${daysLeft != null ? `, осталось ${daysLeft} дн.` : ''}`;
     return 'Подписка не активна';
   }, [isActive, isLifetime, daysLeft]);
-
-  const startPayment = async (code: 'starter' | 'business') => {
-    if (!user) return;
-    setLoadingCode(code);
-    setError('');
-    try {
-      const amount = PLAN_AMOUNTS[code];
-      let activeSession = session;
-      if (!activeSession?.access_token) {
-        const s = await supabase.auth.getSession();
-        activeSession = s.data.session ?? null;
-      }
-      if (!activeSession?.access_token) {
-        const refreshed = await supabase.auth.refreshSession();
-        activeSession = refreshed.data.session ?? null;
-      }
-      if (!activeSession?.access_token) throw new Error('Сессия истекла. Выйдите и войдите снова.');
-
-      const requestPayload = { plan_code: code, amount_kopecks: amount, period_days: 30 };
-      let invokeRes = await supabase.functions.invoke('create-payment-session', {
-        body: { ...requestPayload, user_id: user.id },
-        headers: {
-          Authorization: `Bearer ${activeSession.access_token}`,
-        },
-      });
-      if (invokeRes.error && String(invokeRes.error.message || '').includes('401')) {
-        const refreshed = await supabase.auth.refreshSession();
-        const retryToken = refreshed.data.session?.access_token;
-        if (!retryToken) throw new Error('Сессия истекла. Выйдите и войдите снова.');
-        invokeRes = await supabase.functions.invoke('create-payment-session', {
-          body: { ...requestPayload, user_id: user.id },
-          headers: {
-            Authorization: `Bearer ${retryToken}`,
-          },
-        });
-      }
-      if (invokeRes.error) {
-        const maybeContext = (invokeRes.error as any)?.context;
-        if (maybeContext && typeof maybeContext.text === 'function') {
-          const details = await maybeContext.text();
-          throw new Error(details || invokeRes.error.message || 'Не удалось создать оплату');
-        }
-        throw new Error(invokeRes.error.message || 'Не удалось создать оплату');
-      }
-      const parsed = (invokeRes.data ?? {}) as { checkout_url?: string };
-      if (!parsed.checkout_url) throw new Error('Провайдер не вернул ссылку оплаты');
-      window.location.href = parsed.checkout_url as string;
-    } catch (e) {
-      setError(e instanceof Error ? e.message : 'Ошибка оплаты');
-    } finally {
-      setLoadingCode('');
-    }
-  };
 
   return (
     <div className="space-y-6">
@@ -286,8 +232,6 @@ const SubscriptionPage: React.FC<SubscriptionPageProps> = ({ onBackToRequest }) 
           </button>
         )}
       </div>
-
-      {error && <div className="rounded-lg bg-rose-50 border border-rose-200 p-3 text-rose-800 text-sm">{error}</div>}
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
         {plans.map((plan) => (
@@ -335,11 +279,10 @@ const SubscriptionPage: React.FC<SubscriptionPageProps> = ({ onBackToRequest }) 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                   <button
                     type="button"
-                    onClick={() => startPayment(plan.code)}
-                    disabled={Boolean(loadingCode)}
-                    className="w-full py-2 rounded-lg bg-emerald-500/80 hover:bg-emerald-500 disabled:opacity-60 transition"
+                    onClick={() => setShowUnavailable(true)}
+                    className="w-full py-2 rounded-lg bg-emerald-500/80 hover:bg-emerald-500 transition"
                   >
-                    {loadingCode === plan.code ? 'Переход к оплате...' : 'Выбрать и оплатить'}
+                    Купить
                   </button>
                   <button
                     type="button"
@@ -386,6 +329,60 @@ const SubscriptionPage: React.FC<SubscriptionPageProps> = ({ onBackToRequest }) 
                 <pre className="whitespace-pre-wrap break-words text-sm text-gray-800 leading-relaxed">
                   {plans.find((p) => p.code === detailsCode)?.details ?? ''}
                 </pre>
+              </div>
+            </div>
+          </div>
+        </>
+      ) : null}
+
+      {showUnavailable ? (
+        <>
+          <div
+            className="fixed inset-0 bg-black/40 z-[9000]"
+            aria-hidden="true"
+            onClick={() => setShowUnavailable(false)}
+          />
+          <div className="fixed inset-0 z-[9100] flex items-center justify-center p-3 sm:p-6">
+            <div
+              role="dialog"
+              aria-modal="true"
+              className="w-full max-w-md rounded-2xl bg-white shadow-2xl border border-gray-200 overflow-hidden flex flex-col"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div className="flex items-center justify-between px-5 py-4 border-b border-gray-200">
+                <h4 className="text-lg font-semibold text-gray-900">Добрый день!</h4>
+                <button
+                  type="button"
+                  onClick={() => setShowUnavailable(false)}
+                  className="p-2 rounded-lg hover:bg-gray-100"
+                  aria-label="Закрыть"
+                >
+                  <X className="w-5 h-5 text-gray-600" />
+                </button>
+              </div>
+              <div className="p-5 space-y-4">
+                <p className="text-sm text-gray-700 leading-relaxed">
+                  Мы рады вашему обращению, но прямо сейчас мы не можем дать вам подписку.
+                </p>
+                <p className="text-sm text-gray-700 leading-relaxed">
+                  Напишите нам на почту{' '}
+                  <a
+                    href={`mailto:${SUPPORT_EMAIL}`}
+                    className="font-medium text-blue-700 hover:underline"
+                  >
+                    {SUPPORT_EMAIL}
+                  </a>{' '}
+                  и мы вернёмся с новостями, когда приобретение подписки станет возможным.
+                </p>
+                <div className="pt-2 flex justify-end">
+                  <button
+                    type="button"
+                    onClick={() => setShowUnavailable(false)}
+                    className="px-4 py-2 rounded-lg bg-gray-900 text-white text-sm font-medium hover:bg-gray-800 transition"
+                  >
+                    Понятно
+                  </button>
+                </div>
               </div>
             </div>
           </div>
