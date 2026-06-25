@@ -8,6 +8,11 @@ interface SubscriptionPageProps {
   onBackToRequest?: () => void;
 }
 
+// Временно отключаем покупку подписки. Логика оплаты ниже сохранена:
+// чтобы снова включить продажи, достаточно поставить PURCHASE_ENABLED = true.
+const PURCHASE_ENABLED = false;
+const SUPPORT_EMAIL = 'marketscope@mail.ru';
+
 type Plan = {
   code: 'starter' | 'business' | 'enterprise';
   title: string;
@@ -194,21 +199,25 @@ const SubscriptionPage: React.FC<SubscriptionPageProps> = ({ onBackToRequest }) 
   const [loadingCode, setLoadingCode] = useState<string>('');
   const [error, setError] = useState('');
   const [detailsCode, setDetailsCode] = useState<Plan['code'] | null>(null);
+  const [showUnavailable, setShowUnavailable] = useState(false);
 
-  // Lock background scroll + allow closing details with Escape.
+  // Lock background scroll + allow closing any open dialog with Escape.
   useEffect(() => {
-    if (!detailsCode) return;
+    if (!detailsCode && !showUnavailable) return;
     const prevOverflow = document.body.style.overflow;
     document.body.style.overflow = 'hidden';
     const onKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') setDetailsCode(null);
+      if (e.key === 'Escape') {
+        setDetailsCode(null);
+        setShowUnavailable(false);
+      }
     };
     window.addEventListener('keydown', onKeyDown);
     return () => {
       document.body.style.overflow = prevOverflow;
       window.removeEventListener('keydown', onKeyDown);
     };
-  }, [detailsCode]);
+  }, [detailsCode, showUnavailable]);
 
   const statusText = useMemo(() => {
     if (isLifetime) return 'Бессрочная активная подписка';
@@ -335,11 +344,17 @@ const SubscriptionPage: React.FC<SubscriptionPageProps> = ({ onBackToRequest }) 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                   <button
                     type="button"
-                    onClick={() => startPayment(plan.code)}
-                    disabled={Boolean(loadingCode)}
+                    onClick={() => {
+                      if (!PURCHASE_ENABLED) {
+                        setShowUnavailable(true);
+                        return;
+                      }
+                      if (plan.code !== 'enterprise') startPayment(plan.code);
+                    }}
+                    disabled={PURCHASE_ENABLED && Boolean(loadingCode)}
                     className="w-full py-2 rounded-lg bg-emerald-500/80 hover:bg-emerald-500 disabled:opacity-60 transition"
                   >
-                    {loadingCode === plan.code ? 'Переход к оплате...' : 'Выбрать и оплатить'}
+                    {PURCHASE_ENABLED && loadingCode === plan.code ? 'Переход к оплате...' : 'Выбрать и оплатить'}
                   </button>
                   <button
                     type="button"
@@ -386,6 +401,60 @@ const SubscriptionPage: React.FC<SubscriptionPageProps> = ({ onBackToRequest }) 
                 <pre className="whitespace-pre-wrap break-words text-sm text-gray-800 leading-relaxed">
                   {plans.find((p) => p.code === detailsCode)?.details ?? ''}
                 </pre>
+              </div>
+            </div>
+          </div>
+        </>
+      ) : null}
+
+      {showUnavailable ? (
+        <>
+          <div
+            className="fixed inset-0 bg-black/40 z-[9000]"
+            aria-hidden="true"
+            onClick={() => setShowUnavailable(false)}
+          />
+          <div className="fixed inset-0 z-[9100] flex items-center justify-center p-3 sm:p-6">
+            <div
+              role="dialog"
+              aria-modal="true"
+              className="w-full max-w-md rounded-2xl bg-white shadow-2xl border border-gray-200 overflow-hidden flex flex-col"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div className="flex items-center justify-between px-5 py-4 border-b border-gray-200">
+                <h4 className="text-lg font-semibold text-gray-900">Добрый день!</h4>
+                <button
+                  type="button"
+                  onClick={() => setShowUnavailable(false)}
+                  className="p-2 rounded-lg hover:bg-gray-100"
+                  aria-label="Закрыть"
+                >
+                  <X className="w-5 h-5 text-gray-600" />
+                </button>
+              </div>
+              <div className="p-5 space-y-4">
+                <p className="text-sm text-gray-700 leading-relaxed">
+                  Мы рады вашему обращению, но прямо сейчас мы не можем дать вам подписку.
+                </p>
+                <p className="text-sm text-gray-700 leading-relaxed">
+                  Напишите нам на почту{' '}
+                  <a
+                    href={`mailto:${SUPPORT_EMAIL}`}
+                    className="font-medium text-blue-700 hover:underline"
+                  >
+                    {SUPPORT_EMAIL}
+                  </a>{' '}
+                  и мы вернёмся с новостями, когда приобретение подписки станет возможным.
+                </p>
+                <div className="pt-2 flex justify-end">
+                  <button
+                    type="button"
+                    onClick={() => setShowUnavailable(false)}
+                    className="px-4 py-2 rounded-lg bg-gray-900 text-white text-sm font-medium hover:bg-gray-800 transition"
+                  >
+                    Понятно
+                  </button>
+                </div>
               </div>
             </div>
           </div>
