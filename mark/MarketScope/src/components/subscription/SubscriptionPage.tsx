@@ -1,12 +1,17 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { Check, X } from 'lucide-react';
+import { useAuth } from '../../contexts/AuthContext';
+import { supabase } from '../../lib/supabase';
 import { useSubscriptionStatus } from '../../hooks/useSubscriptionStatus';
-
-const SUPPORT_EMAIL = 'marketscope@mail.ru';
 
 interface SubscriptionPageProps {
   onBackToRequest?: () => void;
 }
+
+// Временно отключаем покупку подписки. Логика оплаты ниже сохранена:
+// чтобы снова включить продажи, достаточно поставить PURCHASE_ENABLED = true.
+const PURCHASE_ENABLED = false;
+const SUPPORT_EMAIL = 'marketscope@mail.ru';
 
 type Plan = {
   code: 'starter' | 'business' | 'enterprise';
@@ -186,8 +191,13 @@ const plans: Plan[] = [
   },
 ];
 
+const PLAN_AMOUNTS: Record<string, number> = { starter: 500000, business: 1500000 }; // kopecks
+
 const SubscriptionPage: React.FC<SubscriptionPageProps> = ({ onBackToRequest }) => {
+  const { user, session } = useAuth();
   const { isActive, isLifetime, daysLeft, subscription } = useSubscriptionStatus();
+  const [loadingCode, setLoadingCode] = useState<string>('');
+  const [error, setError] = useState('');
   const [detailsCode, setDetailsCode] = useState<Plan['code'] | null>(null);
   const [showUnavailable, setShowUnavailable] = useState(false);
 
@@ -215,6 +225,59 @@ const SubscriptionPage: React.FC<SubscriptionPageProps> = ({ onBackToRequest }) 
     return 'Подписка не активна';
   }, [isActive, isLifetime, daysLeft]);
 
+  const startPayment = async (code: 'starter' | 'business') => {
+    if (!user) return;
+    setLoadingCode(code);
+    setError('');
+    try {
+      const amount = PLAN_AMOUNTS[code];
+      let activeSession = session;
+      if (!activeSession?.access_token) {
+        const s = await supabase.auth.getSession();
+        activeSession = s.data.session ?? null;
+      }
+      if (!activeSession?.access_token) {
+        const refreshed = await supabase.auth.refreshSession();
+        activeSession = refreshed.data.session ?? null;
+      }
+      if (!activeSession?.access_token) throw new Error('Сессия истекла. Выйдите и войдите снова.');
+
+      const requestPayload = { plan_code: code, amount_kopecks: amount, period_days: 30 };
+      let invokeRes = await supabase.functions.invoke('create-payment-session', {
+        body: { ...requestPayload, user_id: user.id },
+        headers: {
+          Authorization: `Bearer ${activeSession.access_token}`,
+        },
+      });
+      if (invokeRes.error && String(invokeRes.error.message || '').includes('401')) {
+        const refreshed = await supabase.auth.refreshSession();
+        const retryToken = refreshed.data.session?.access_token;
+        if (!retryToken) throw new Error('Сессия истекла. Выйдите и войдите снова.');
+        invokeRes = await supabase.functions.invoke('create-payment-session', {
+          body: { ...requestPayload, user_id: user.id },
+          headers: {
+            Authorization: `Bearer ${retryToken}`,
+          },
+        });
+      }
+      if (invokeRes.error) {
+        const maybeContext = (invokeRes.error as any)?.context;
+        if (maybeContext && typeof maybeContext.text === 'function') {
+          const details = await maybeContext.text();
+          throw new Error(details || invokeRes.error.message || 'Не удалось создать оплату');
+        }
+        throw new Error(invokeRes.error.message || 'Не удалось создать оплату');
+      }
+      const parsed = (invokeRes.data ?? {}) as { checkout_url?: string };
+      if (!parsed.checkout_url) throw new Error('Провайдер не вернул ссылку оплаты');
+      window.location.href = parsed.checkout_url as string;
+    } catch (e) {
+      setError(e instanceof Error ? e.message : 'Ошибка оплаты');
+    } finally {
+      setLoadingCode('');
+    }
+  };
+
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
@@ -232,6 +295,8 @@ const SubscriptionPage: React.FC<SubscriptionPageProps> = ({ onBackToRequest }) 
           </button>
         )}
       </div>
+
+      {error && <div className="rounded-lg bg-rose-50 border border-rose-200 p-3 text-rose-800 text-sm">{error}</div>}
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
         {plans.map((plan) => (
@@ -279,10 +344,17 @@ const SubscriptionPage: React.FC<SubscriptionPageProps> = ({ onBackToRequest }) 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                   <button
                     type="button"
-                    onClick={() => setShowUnavailable(true)}
-                    className="w-full py-2 rounded-lg bg-emerald-500/80 hover:bg-emerald-500 transition"
+                    onClick={() => {
+                      if (!PURCHASE_ENABLED) {
+                        setShowUnavailable(true);
+                        return;
+                      }
+                      if (plan.code !== 'enterprise') startPayment(plan.code);
+                    }}
+                    disabled={PURCHASE_ENABLED && Boolean(loadingCode)}
+                    className="w-full py-2 rounded-lg bg-emerald-500/80 hover:bg-emerald-500 disabled:opacity-60 transition"
                   >
-                    Купить
+                    {PURCHASE_ENABLED && loadingCode === plan.code ? 'Переход к оплате...' : 'Выбрать и оплатить'}
                   </button>
                   <button
                     type="button"
