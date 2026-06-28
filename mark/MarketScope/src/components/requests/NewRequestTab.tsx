@@ -1,8 +1,10 @@
 import React, { useMemo, useState } from 'react';
+import Select from 'react-select';
 import { supabase } from '../../lib/supabase';
 import { useAuth } from '../../contexts/AuthContext';
 import { invokeEdgeFunction } from '../../lib/edgeFunctions';
 import type { ClientRequest } from '../../types';
+import { TYPE_OPTIONS, CUISINE_OPTIONS, type SelectOption } from '../../data/searchOptions';
 
 type RequestMode = 'market_overview' | 'competitive_analysis';
 
@@ -20,9 +22,9 @@ const NewRequestTab: React.FC<NewRequestTabProps> = ({ onCreated, onOpenSubscrip
   const [error, setError] = useState<string>('');
   const [success, setSuccess] = useState<string>('');
 
-  // Market overview fields
-  const [placeType, setPlaceType] = useState('');
-  const [cuisine, setCuisine] = useState('');
+  // Market overview fields (мультивыбор типов и кухонь — снижает долю ошибочных запросов)
+  const [placeTypes, setPlaceTypes] = useState<SelectOption[]>([]);
+  const [cuisines, setCuisines] = useState<SelectOption[]>([]);
   const [avgCheckMin, setAvgCheckMin] = useState<number | ''>('');
   const [avgCheckMax, setAvgCheckMax] = useState<number | ''>('');
 
@@ -34,9 +36,11 @@ const NewRequestTab: React.FC<NewRequestTabProps> = ({ onCreated, onOpenSubscrip
 
   const params = useMemo(() => {
     if (mode === 'market_overview') {
+      const typeStr = placeTypes.map((o) => o.value).join(', ');
+      const cuisineStr = cuisines.map((o) => o.value).join(', ');
       return {
-        type: placeType || null,
-        cuisine: cuisine || null,
+        type: typeStr || null,
+        cuisine: cuisineStr || null,
         avg_check_min: avgCheckMin === '' ? null : avgCheckMin,
         avg_check_max: avgCheckMax === '' ? null : avgCheckMax,
       };
@@ -49,7 +53,7 @@ const NewRequestTab: React.FC<NewRequestTabProps> = ({ onCreated, onOpenSubscrip
         menu_url: myMenuUrl || null,
       },
     };
-  }, [mode, placeType, cuisine, avgCheckMin, avgCheckMax, myName, myAddress, mySite, myMenuUrl]);
+  }, [mode, placeTypes, cuisines, avgCheckMin, avgCheckMax, myName, myAddress, mySite, myMenuUrl]);
 
   const avgCheckRangeOk = useMemo(() => {
     if (mode !== 'market_overview') return true;
@@ -63,14 +67,14 @@ const NewRequestTab: React.FC<NewRequestTabProps> = ({ onCreated, onOpenSubscrip
     if (!subscriptionActive) return false;
     if (!queryText.trim()) return false;
     if (mode === 'market_overview') {
-      if (!placeType.trim()) return false;
-      if (!cuisine.trim()) return false;
+      if (placeTypes.length === 0) return false;
+      if (cuisines.length === 0) return false;
       if (avgCheckMin === '' || avgCheckMax === '') return false;
       if (!avgCheckRangeOk) return false;
       return true;
     }
     return Boolean(myName.trim() && myAddress.trim() && mySite.trim() && myMenuUrl.trim());
-  }, [user, subscriptionActive, queryText, mode, placeType, cuisine, avgCheckMin, avgCheckMax, avgCheckRangeOk, myName, myAddress, mySite, myMenuUrl]);
+  }, [user, subscriptionActive, queryText, mode, placeTypes, cuisines, avgCheckMin, avgCheckMax, avgCheckRangeOk, myName, myAddress, mySite, myMenuUrl]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -183,22 +187,32 @@ const NewRequestTab: React.FC<NewRequestTabProps> = ({ onCreated, onOpenSubscrip
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
                 <label className="block text-sm font-medium text-gray-700">Тип заведения</label>
-                <input
-                  value={placeType}
-                  onChange={(e) => setPlaceType(e.target.value)}
-                  required
-                  className="mt-1 w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  placeholder="Например: ресторан"
+                <Select
+                  isMulti
+                  options={TYPE_OPTIONS}
+                  value={placeTypes}
+                  onChange={(vals) => setPlaceTypes(vals as SelectOption[])}
+                  placeholder="Выберите один или несколько типов"
+                  noOptionsMessage={() => 'Нет вариантов'}
+                  classNamePrefix="rs"
+                  className="mt-1 text-sm"
+                  menuPortalTarget={typeof document !== 'undefined' ? document.body : undefined}
+                  styles={{ menuPortal: (base) => ({ ...base, zIndex: 9999 }) }}
                 />
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700">Кухня</label>
-                <input
-                  value={cuisine}
-                  onChange={(e) => setCuisine(e.target.value)}
-                  required
-                  className="mt-1 w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  placeholder="Например: русская"
+                <Select
+                  isMulti
+                  options={CUISINE_OPTIONS}
+                  value={cuisines}
+                  onChange={(vals) => setCuisines(vals as SelectOption[])}
+                  placeholder="Выберите одну или несколько кухонь"
+                  noOptionsMessage={() => 'Нет вариантов'}
+                  classNamePrefix="rs"
+                  className="mt-1 text-sm"
+                  menuPortalTarget={typeof document !== 'undefined' ? document.body : undefined}
+                  styles={{ menuPortal: (base) => ({ ...base, zIndex: 9999 }) }}
                 />
               </div>
               <div>
