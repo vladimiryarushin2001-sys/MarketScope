@@ -67,6 +67,25 @@ def _split_set(s: str) -> set[str]:
     return {p.strip().lower() for p in str(s).split(",") if p.strip()}
 
 
+def _tags_match(raw: str, want_tags: set[str]) -> bool:
+    """
+    Совпадение тегов строки заведения с набором из запроса.
+    AND по тегам запроса, OR по словам внутри тега (для запросов вида
+    "русская, азиатская" или "восточная азиатская" — достаточно любого слова).
+    """
+    row_tokens = _split_set(raw)
+    for wanted in want_tags:
+        # Точное совпадение тега (например, "японская" среди {"японская", "азиатская"})
+        if wanted in row_tokens:
+            continue
+        # Многословный/перечисленный через запятую запрос: достаточно любого слова/токена
+        wanted_tokens = {t.strip() for t in re.split(r'[\s,]+', wanted) if t.strip()}
+        if wanted_tokens & row_tokens:
+            continue
+        return False
+    return True
+
+
 def _check_columns(df: pd.DataFrame) -> None:
     """Проверка наличия обязательных полей в датафрейме."""
     missing = [c for c in REQUIRED_COLUMNS if c not in df.columns]
@@ -108,8 +127,9 @@ def _filter_df(
     want_types = _normalize_set(types)
     want_cuisines = _normalize_set(cuisines)
 
+    # Тип: AND по тегам, OR по словам внутри тега (поддержка нескольких типов через запятую)
     mask_type = (
-        df["тип_заведения"].apply(lambda x: bool(_split_set(x) & want_types))
+        df["тип_заведения"].apply(lambda x: _tags_match(x, want_types))
         if want_types
         else pd.Series(True, index=df.index)
     )
@@ -121,27 +141,48 @@ def _filter_df(
     if price_max is not None:
         soft_max = price_max * (1 + PRICE_MARGIN)
         mask_price &= (df["средний_чек"] <= soft_max) | df["средний_чек"].isna()
-    def _cuisine_row_matches(raw: str) -> bool:
-        restaurant_tokens = _split_set(raw)
-        for wanted in want_cuisines:
-            # Exact tag match first (e.g. "японская" in {"японская", "азиатская"})
-            if wanted in restaurant_tokens:
-                continue
-            # Multi-word query (e.g. "восточная азиатская"): any word/token must appear
-            wanted_tokens = {t.strip() for t in re.split(r'[\s,]+', wanted) if t.strip()}
-            if wanted_tokens & restaurant_tokens:
-                continue
-            return False
-        return True
-
-    # Все кухни из запроса должны быть у заведения (AND по тегам, OR по словам внутри тега)
+    # Кухня: AND по тегам, OR по словам внутри тега (поддержка нескольких кухонь через запятую)
     mask_cuisine = (
-        df["кухня"].apply(_cuisine_row_matches)
+        df["кухня"].apply(lambda x: _tags_match(x, want_cuisines))
         if want_cuisines
         else pd.Series(True, index=df.index)
     )
 
     return df.loc[mask_type & mask_price & mask_cuisine].reset_index(drop=True)
+
+
+def _filter_df_with_fallback(
+    df: pd.DataFrame,
+    types: Optional[list[str]] = None,
+    price_min: Optional[float] = None,
+    price_max: Optional[float] = None,
+    cuisines: Optional[list[str]] = None,
+) -> pd.DataFrame:
+    """
+    Фильтр со страховкой от пустого результата: если строгое условие
+    (тип И цена И кухня) не даёт ни одного заведения, последовательно
+    ослабляем ограничения, чтобы пайплайн не падал на пустой выборке.
+
+    Порядок ослабления (кухня — главный интент, снимается последней):
+      1) тип + цена + кухня
+      2) цена + кухня (без типа)
+      3) кухня (без типа и цены)
+      4) тип + цена (без кухни)
+      5) без фильтров (вся база)
+    """
+    attempts = [
+        dict(types=types, price_min=price_min, price_max=price_max, cuisines=cuisines),
+        dict(types=None, price_min=price_min, price_max=price_max, cuisines=cuisines),
+        dict(types=None, price_min=None, price_max=None, cuisines=cuisines),
+        dict(types=types, price_min=price_min, price_max=price_max, cuisines=None),
+        dict(types=None, price_min=None, price_max=None, cuisines=None),
+    ]
+    last = df.iloc[0:0]
+    for params in attempts:
+        last = _filter_df(df, **params)
+        if len(last) > 0:
+            return last
+    return last
 
 
 def _cosine_similarity(a: np.ndarray, b: np.ndarray) -> np.ndarray:
@@ -257,7 +298,7 @@ class PlaceSearch:
         Для эмбеддинга приоритет: описание_полное (2-3 предложения) > особенности (ключевые слова).
         Возвращаем топ-n по косинусной близости.
         """
-        filtered = _filter_df(
+        filtered = _filter_df_with_fallback(
             self._df,
             types=types,
             price_min=price_min,
