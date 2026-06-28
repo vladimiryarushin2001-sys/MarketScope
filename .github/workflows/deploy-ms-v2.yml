@@ -1,0 +1,38 @@
+# Автодеплой микросервиса ms-v2 на прод VPS (Beget) по SSH.
+# Срабатывает при push в main, если менялся код бэкенда или файлы деплоя.
+# Можно запустить вручную через "Run workflow" (workflow_dispatch).
+name: Deploy ms-v2 (VPS)
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "backend/ms-v2/**"
+      - "deploy/beget/**"
+      - ".github/workflows/deploy-ms-v2.yml"
+  workflow_dispatch:
+
+concurrency:
+  group: deploy-ms-v2
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    name: SSH deploy to VPS
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy over SSH
+        uses: appleboy/ssh-action@v1.2.0
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: ${{ secrets.VPS_USER }}
+          key: ${{ secrets.VPS_SSH_KEY }}
+          port: ${{ secrets.VPS_PORT }}
+          script_stop: true
+          command_timeout: "30m"
+          script: |
+            set -e
+            APP_DIR="${{ secrets.VPS_APP_DIR }}"
+            APP_DIR="${APP_DIR:-/opt/marketscope}"
+            cd "$APP_DIR"
+            APP_DIR="$APP_DIR" GIT_REF="main" bash deploy/beget/deploy.sh
