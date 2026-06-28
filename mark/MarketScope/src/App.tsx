@@ -85,6 +85,12 @@ const CompetitorAnalysisDashboard: React.FC = () => {
     activeRunId,
   } = useDashboardData(activeRequestId ? latestRunForRequestId : undefined);
 
+  // Держим актуальную ссылку на refetch, чтобы не пересоздавать интервал опроса.
+  const refetchRef = React.useRef(refetch);
+  React.useEffect(() => {
+    refetchRef.current = refetch;
+  }, [refetch]);
+
   const restaurants: Restaurant[] = useMemo(() => {
     if (hasDb && !dbError) return dbRestaurants;
     return mockRestaurants;
@@ -252,11 +258,17 @@ const CompetitorAnalysisDashboard: React.FC = () => {
     let cancelled = false;
     const tick = async () => {
       try {
+        let didIngest = false;
         for (const runId of runIds) {
           if (cancelled) return;
-          await invokeEdgeFunction('ms-v2-poll', { run_id: runId });
+          const res = await invokeEdgeFunction<{ ingested?: boolean; status?: string }>('ms-v2-poll', { run_id: runId });
+          if (res?.ingested) didIngest = true;
         }
-        if (!cancelled) reloadRequests({ silent: true });
+        if (!cancelled) {
+          reloadRequests({ silent: true });
+          // Данные только что записаны в БД — перезагружаем дашборд, чтобы они появились без обновления страницы.
+          if (didIngest) refetchRef.current?.();
+        }
       } catch {
         // ignore transient errors; we'll try again
       }
