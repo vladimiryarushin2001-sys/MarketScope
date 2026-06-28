@@ -115,10 +115,59 @@ docker compose -f docker-compose.prod.yml logs -f --tail=200
 
 ## 7) Обновление на сервере
 
+### Вариант A — вручную скриптом (рекомендуется)
+
+На сервере достаточно одной команды — она подтянет свежий код из git и пересоберёт контейнеры:
+
+```bash
+/opt/marketscope/deploy/beget/deploy.sh
+```
+
+Скрипт делает `git fetch` + `git reset --hard origin/main` и `docker compose ... up --build -d`,
+поэтому новый `place_search.py` (и любой другой обновлённый код) гарантированно попадёт в прод.
+
+### Вариант B — вручную напрямую
+
 ```bash
 cd /opt/marketscope
 git pull
 cd deploy/beget
 docker compose -f docker-compose.prod.yml up --build -d
 ```
+
+## 8) Автодеплой через GitHub Actions (push в main → прод)
+
+В репозитории есть workflow `.github/workflows/deploy-ms-v2.yml`: при push в `main`,
+который меняет `backend/ms-v2/**` или `deploy/beget/**`, GitHub по SSH заходит на VPS
+и запускает `deploy/beget/deploy.sh`. Так новый файл автоматически «подтягивается» в прод.
+
+### Что нужно один раз настроить
+
+1. Сгенерировать SSH-ключ для деплоя (на своей машине), **без пароля**:
+
+   ```bash
+   ssh-keygen -t ed25519 -C "github-deploy-ms-v2" -f deploy_key -N ""
+   ```
+
+2. Положить публичный ключ на сервер (в пользователя, под которым деплоим):
+
+   ```bash
+   ssh-copy-id -i deploy_key.pub root@SERVER_IP
+   # или вручную добавить содержимое deploy_key.pub в ~/.ssh/authorized_keys на сервере
+   ```
+
+3. В GitHub: **Settings → Secrets and variables → Actions → New repository secret** добавить:
+
+   | Secret | Значение | Обязателен |
+   |--------|----------|------------|
+   | `VPS_HOST` | IP или домен сервера (например `123.45.67.89`) | да |
+   | `VPS_USER` | SSH-пользователь (например `root`) | да |
+   | `VPS_SSH_KEY` | приватный ключ целиком (содержимое файла `deploy_key`) | да |
+   | `VPS_PORT` | SSH-порт (если не `22`) | нет |
+   | `VPS_APP_DIR` | путь к репо на сервере, если не `/opt/marketscope` | нет |
+
+4. Проверка: можно запустить деплой вручную — вкладка **Actions → Deploy ms-v2 (VPS) → Run workflow**.
+
+> Важно: каталог `/opt/marketscope` на сервере должен быть git-репозиторием
+> (склонированным в шаге 3 «Склонировать репозиторий»), иначе скрипт деплоя не сработает.
 
