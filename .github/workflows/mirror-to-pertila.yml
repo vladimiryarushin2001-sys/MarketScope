@@ -1,0 +1,60 @@
+# Зеркалирование изменений в pertila1/marketscope.
+# Выполняется на инфраструктуре GitHub (стабильная связь), поэтому обходит
+# сетевые проблемы push'а с локальных машин/VPS.
+#
+# Требуется один секрет: PERTILA_PUSH_TOKEN — Personal Access Token аккаунта,
+# у которого есть право записи (Contents: write) в pertila1/marketscope.
+# Добавить: Settings → Secrets and variables → Actions → New repository secret.
+#
+# Запуск: вкладка Actions → "Mirror to pertila" → Run workflow.
+name: Mirror to pertila
+
+on:
+  workflow_dispatch:
+    inputs:
+      source_branch:
+        description: "Ветка этого репозитория, которую отправить в main pertila1/marketscope"
+        required: true
+        default: "sync/pertila-all-updates-7bf0"
+      target_branch:
+        description: "Ветка-приёмник в pertila1/marketscope"
+        required: true
+        default: "main"
+      force:
+        description: "Форсировать (--force-with-lease). Использовать осторожно."
+        required: true
+        default: "false"
+
+concurrency:
+  group: mirror-to-pertila
+  cancel-in-progress: false
+
+jobs:
+  mirror:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout source branch
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.source_branch }}
+          fetch-depth: 0
+
+      - name: Push to pertila1/marketscope
+        env:
+          TOKEN: ${{ secrets.PERTILA_PUSH_TOKEN }}
+          TARGET: ${{ inputs.target_branch }}
+          FORCE: ${{ inputs.force }}
+        run: |
+          set -e
+          if [ -z "$TOKEN" ]; then
+            echo "::error::Секрет PERTILA_PUSH_TOKEN не задан. Добавьте его в Settings → Secrets and variables → Actions."
+            exit 1
+          fi
+          REMOTE="https://x-access-token:${TOKEN}@github.com/pertila1/marketscope.git"
+          echo "Push $(git rev-parse --short HEAD) -> pertila1/marketscope:${TARGET}"
+          if [ "$FORCE" = "true" ]; then
+            git push --force-with-lease "$REMOTE" "HEAD:${TARGET}"
+          else
+            git push "$REMOTE" "HEAD:${TARGET}"
+          fi
+          echo "Готово."
