@@ -6,6 +6,7 @@
 from __future__ import annotations
 
 import os
+import re
 from typing import Any, Optional
 
 import numpy as np
@@ -120,9 +121,22 @@ def _filter_df(
     if price_max is not None:
         soft_max = price_max * (1 + PRICE_MARGIN)
         mask_price &= (df["средний_чек"] <= soft_max) | df["средний_чек"].isna()
-    # Все кухни из запроса должны быть у заведения (AND)
+    def _cuisine_row_matches(raw: str) -> bool:
+        restaurant_tokens = _split_set(raw)
+        for wanted in want_cuisines:
+            # Exact tag match first (e.g. "японская" in {"японская", "азиатская"})
+            if wanted in restaurant_tokens:
+                continue
+            # Multi-word query (e.g. "восточная азиатская"): any word/token must appear
+            wanted_tokens = {t.strip() for t in re.split(r'[\s,]+', wanted) if t.strip()}
+            if wanted_tokens & restaurant_tokens:
+                continue
+            return False
+        return True
+
+    # Все кухни из запроса должны быть у заведения (AND по тегам, OR по словам внутри тега)
     mask_cuisine = (
-        df["кухня"].apply(lambda x: want_cuisines.issubset(_split_set(x)))
+        df["кухня"].apply(_cuisine_row_matches)
         if want_cuisines
         else pd.Series(True, index=df.index)
     )
