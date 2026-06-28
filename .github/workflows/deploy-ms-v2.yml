@@ -20,8 +20,22 @@ jobs:
   deploy:
     name: SSH deploy to VPS
     runs-on: ubuntu-latest
+    env:
+      VPS_HOST: ${{ secrets.VPS_HOST }}
     steps:
+      - name: Check deploy secrets
+        id: check
+        run: |
+          if [ -z "${VPS_HOST}" ]; then
+            echo "::notice::Секреты VPS не заданы (VPS_HOST пуст). Деплой пропущен."
+            echo "Добавьте VPS_HOST, VPS_USER, VPS_SSH_KEY в Settings → Secrets and variables → Actions, чтобы включить автодеплой."
+            echo "ready=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "ready=true" >> "$GITHUB_OUTPUT"
+          fi
+
       - name: Deploy over SSH
+        if: steps.check.outputs.ready == 'true'
         uses: appleboy/ssh-action@v1.2.0
         with:
           host: ${{ secrets.VPS_HOST }}
@@ -30,9 +44,32 @@ jobs:
           port: ${{ secrets.VPS_PORT }}
           script_stop: true
           command_timeout: "30m"
+          # Скрипт самодостаточный: если репо ещё не склонировано — клонирует,
+          # иначе подтягивает свежий main. Не зависит от наличия deploy.sh на сервере.
           script: |
             set -e
             APP_DIR="${{ secrets.VPS_APP_DIR }}"
             APP_DIR="${APP_DIR:-/opt/marketscope}"
+            REPO_URL="https://github.com/vladimiryarushin2001-sys/MarketScope.git"
+            COMPOSE_FILE="deploy/beget/docker-compose.prod.yml"
+
+            if [ ! -d "$APP_DIR/.git" ]; then
+              echo "==> Репозиторий не найден в $APP_DIR — клонирую"
+              mkdir -p "$APP_DIR"
+              git clone "$REPO_URL" "$APP_DIR"
+            fi
+
             cd "$APP_DIR"
-            APP_DIR="$APP_DIR" GIT_REF="main" bash deploy/beget/deploy.sh
+            echo "==> Обновляю код из git (main)"
+            git fetch --all --prune
+            git checkout main
+            git reset --hard origin/main
+
+            echo "==> Пересобираю и поднимаю контейнеры"
+            docker compose -f "$COMPOSE_FILE" up --build -d
+
+            echo "==> Чищу старые образы"
+            docker image prune -f >/dev/null 2>&1 || true
+
+            echo "==> Готово. Текущий commit:"
+            git --no-pager log -1 --oneline
