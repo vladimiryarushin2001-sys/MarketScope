@@ -20,8 +20,22 @@ jobs:
   deploy:
     name: SSH deploy to VPS
     runs-on: ubuntu-latest
+    env:
+      VPS_HOST: ${{ secrets.VPS_HOST }}
     steps:
+      - name: Check deploy secrets
+        id: check
+        run: |
+          if [ -z "${VPS_HOST}" ]; then
+            echo "::notice::Секреты VPS не заданы (VPS_HOST пуст). Деплой пропущен."
+            echo "Добавьте VPS_HOST, VPS_USER, VPS_SSH_KEY в Settings → Secrets and variables → Actions, чтобы включить автодеплой."
+            echo "ready=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "ready=true" >> "$GITHUB_OUTPUT"
+          fi
+
       - name: Deploy over SSH
+        if: steps.check.outputs.ready == 'true'
         uses: appleboy/ssh-action@v1.2.0
         with:
           host: ${{ secrets.VPS_HOST }}
