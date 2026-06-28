@@ -191,6 +191,26 @@ Deno.serve(async (req) => {
           output_keys: outputs && typeof outputs === "object" ? Object.keys(outputs) : [],
         });
       }
+
+      // Анти-гонка: несколько одновременных опросов не должны параллельно вызывать ingest.
+      // ingest делает DELETE+INSERT по run_id; параллельные вызовы приводят к FK-ошибкам
+      // (например, menu_items_menu_id_fkey: menus удалены другим вызовом).
+      // Атомарно «занимаем» run через finished_at (ставится один раз). Кто занял — тот и делает ingest.
+      // forceRepair (ремонт из UI) пропускает блокировку намеренно.
+      if (!forceRepair) {
+        const claim = await supabase
+          .from("analysis_runs")
+          .update({ finished_at: new Date().toISOString() })
+          .eq("id", runId)
+          .is("finished_at", null)
+          .select("id");
+        if (claim.error) return json(500, { error: errToMessage(claim.error) });
+        if (!claim.data || claim.data.length === 0) {
+          // Другой опрос уже выполняет (или выполнил) ingest для этого run — не дублируем запись.
+          return json(200, { ok: true, status, progress, ingested: false, skipped: "ingest_in_progress" });
+        }
+      }
+
       const ingestRes = await fetch(`${supabaseUrl}/functions/v1/ingest`, {
         method: "POST",
         headers: {
