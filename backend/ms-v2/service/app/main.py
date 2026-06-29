@@ -43,7 +43,7 @@ class AnalyzeRequest(BaseModel):
     mode: Literal["template", "free_form"] = "template"
     top_n: int = 10
     enrich_with_perplexity: bool = True
-    perplexity_model: str = "sonar"
+    perplexity_model: str = "sonar-pro"
     template: TemplateParams | None = None
     free_form_text: str | None = None
     reference_place: ReferencePlace | None = None

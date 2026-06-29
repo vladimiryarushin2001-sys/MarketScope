@@ -23,7 +23,7 @@ from pathlib import Path
 #  Общие константы
 # ══════════════════════════════════════════════════════════════════════
 
-_DEFAULT_MODEL = "sonar"
+_DEFAULT_MODEL = "sonar-pro"
 
 _SYSTEM_PROMPT = textwrap.dedent("""\
     Ты — аналитик ресторанного рынка. Пишешь отчёт для человека,

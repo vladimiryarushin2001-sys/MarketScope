@@ -486,7 +486,7 @@ class EnrichmentResponse(BaseModel):
 
 
 
-def _enrich_place_with_perplexity(place: dict, api_key: str, model: str = "sonar") -> dict:
+def _enrich_place_with_perplexity(place: dict, api_key: str, model: str = "sonar-pro") -> dict:
     """
     Обогащает заведение полями через Perplexity API:
     - сайт (официальный URL заведения, НЕ агрегатора/каталога)
@@ -525,7 +525,12 @@ def _enrich_place_with_perplexity(place: dict, api_key: str, model: str = "sonar
         "   - Если сомневаешься или собственного сайта нет — верни null.\n\n"
         "2. ПОЛЕ delivery: true если есть своя доставка, false если нет, null если неизвестно.\n\n"
         "3. ПОЛЕ time_work: строка с временем работы. "
-        "Если заведение закрыто навсегда — строго 'закрыто навсегда'. Если неизвестно — null.\n\n"
+        "СНАЧАЛА активно проверь, не закрылось ли заведение навсегда: поищи новости, "
+        "отзывы на Яндекс.Картах/2GIS/Google Maps, страницы в соцсетях (ВКонтакте, Instagram). "
+        "Если есть ЛЮБОЙ признак закрытия (отметка 'закрыто' на картах, последний пост в соцсетях "
+        "больше года назад, отзывы о закрытии, сайт не работает) — верни строго 'закрыто навсегда'. "
+        "При малейшем сомнении в том, что заведение работает — тоже верни 'закрыто навсегда'. "
+        "Если заведение точно работает — верни часы работы. Если неизвестно — null.\n\n"
         "4. ПОЛЕ average_check: целое число в рублях без валюты. Если неизвестно — null.\n\n"
         + format_instructions
     )
@@ -653,7 +658,7 @@ class ReferenceEnrichment(BaseModel):
     )
 
 
-def _enrich_reference_place(card: dict, api_key: str, model: str = "sonar") -> dict:
+def _enrich_reference_place(card: dict, api_key: str, model: str = "sonar-pro") -> dict:
     """Полное обогащение карточки reference_place: тип, кухня, описание + стандартные поля."""
     try:
         from langchain_perplexity import ChatPerplexity
@@ -723,7 +728,7 @@ def _enrich_reference_place(card: dict, api_key: str, model: str = "sonar") -> d
     return card
 
 
-def _build_reference_card(ref: dict, api_key: str | None, model: str = "sonar") -> dict:
+def _build_reference_card(ref: dict, api_key: str | None, model: str = "sonar-pro") -> dict:
     """Собирает карточку опорного заведения с полным обогащением через Perplexity."""
     card = {
         "название": ref.get("name", ""),

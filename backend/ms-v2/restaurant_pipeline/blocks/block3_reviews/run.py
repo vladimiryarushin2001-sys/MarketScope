@@ -303,7 +303,7 @@ def _summarize_with_perplexity(
     place_name: str,
     reviews: list[dict],
     api_key: str,
-    model: str = "sonar",
+    model: str = "sonar-pro",
     place_info: dict | None = None,
 ) -> dict:
     """Суммаризация отзывов через Perplexity + PydanticOutputParser."""
