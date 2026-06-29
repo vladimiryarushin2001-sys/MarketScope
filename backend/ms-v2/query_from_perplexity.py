@@ -50,7 +50,7 @@ def query_from_perplexity(
     *,
     available_cuisines: Optional[list[str]] = None,
     api_key: Optional[str] = None,
-    model: str = "sonar",
+    model: str = "sonar-pro",
 ) -> dict[str, Any]:
     """
     По тексту пользователя (название, адрес или описание) получает от Perplexity
